@@ -1,0 +1,11 @@
+# Compilados y distribucion (NetBeans/Ant)
+build/
+dist/
+
+# Configuracion personal de NetBeans
+nbproject/private/
+
+# Archivos del sistema
+Thumbs.db
+Desktop.ini
+.DS_Store
