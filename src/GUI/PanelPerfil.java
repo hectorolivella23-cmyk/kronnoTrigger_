@@ -50,6 +50,7 @@ public class PanelPerfil extends javax.swing.JPanel {
         lblusuario.setText("Perfil");
 
         porfile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/porfile.png"))); // NOI18N
+        porfile.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel3.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
         jLabel3.setText("Nombre de Usuario");
@@ -91,6 +92,11 @@ public class PanelPerfil extends javax.swing.JPanel {
 
         btnChangePorfile.setFont(new java.awt.Font("Roboto Condensed", 0, 18)); // NOI18N
         btnChangePorfile.setText("Cambiar foto de perfil");
+        btnChangePorfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangePorfileActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -129,15 +135,10 @@ public class PanelPerfil extends javax.swing.JPanel {
                 .addComponent(lblusuario)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(81, 81, 81)
+                        .addGap(69, 69, 69)
                         .addComponent(porfile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChangePorfile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnSave)
-                            .addComponent(btnCancel))
-                        .addGap(56, 56, 56))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnChangePorfile))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(56, 56, 56)
                         .addComponent(jLabel3)
@@ -152,8 +153,12 @@ public class PanelPerfil extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(lblNewPassword)
                         .addGap(18, 18, 18)
-                        .addComponent(NewPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(NewPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancel)
+                    .addComponent(btnSave))
+                .addGap(24, 24, 24))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -166,6 +171,29 @@ public class PanelPerfil extends javax.swing.JPanel {
     private void NewPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewPasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_NewPasswordActionPerformed
+
+    private void btnChangePorfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePorfileActionPerformed
+        javax.swing.JFileChooser explorador = new javax.swing.JFileChooser();
+        javax.swing.filechooser.FileNameExtensionFilter filtro = new javax.swing.filechooser.FileNameExtensionFilter("Imágenes (JPG, PNG)", "jpg", "jpeg", "png");
+        explorador.setFileFilter(filtro);
+        int respuesta = explorador.showOpenDialog(null);
+        if(respuesta == javax.swing.JFileChooser.APPROVE_OPTION){
+            try{
+                java.io.File imagenElegida = explorador.getSelectedFile();
+                java.awt.image.BufferedImage nuevaImagen = javax.imageio.ImageIO.read(imagenElegida);
+                int alto = 200;
+                int ancho = 200;
+                java.awt.Image imagenAjustada = nuevaImagen.getScaledInstance(ancho, alto, java.awt.Image.SCALE_SMOOTH);
+                porfile.setIcon(new javax.swing.ImageIcon(imagenAjustada));
+                porfile.setText("");
+                porfile.revalidate();
+                porfile.repaint();
+            }
+            catch(Exception e){
+                System.out.println("Error al cargar la imagen: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnChangePorfileActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

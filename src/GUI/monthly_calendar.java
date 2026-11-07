@@ -51,11 +51,11 @@ public class monthly_calendar extends javax.swing.JFrame {
         Panel_lateral.setMinimumSize(new java.awt.Dimension(200, 500));
         Panel_lateral.setPreferredSize(new java.awt.Dimension(200, 500));
 
-        jLabel1.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/logo kronnotrigger.png"))); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Roboto Medium", 0, 18)); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/logo kronnotrigger-panelprincipal.png"))); // NOI18N
         jLabel1.setText("Kronno");
 
-        jLabel2.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Roboto Medium", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(249, 111, 11));
         jLabel2.setText("Trigger");
 
@@ -78,7 +78,8 @@ public class monthly_calendar extends javax.swing.JFrame {
             }
         });
 
-        btnPerfil.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
+        btnPerfil.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
+        btnPerfil.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/porfile-miniatura.png"))); // NOI18N
         btnPerfil.setText("Perfil");
         btnPerfil.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -91,22 +92,16 @@ public class monthly_calendar extends javax.swing.JFrame {
         Panel_lateralLayout.setHorizontalGroup(
             Panel_lateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_lateralLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(Panel_lateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(Panel_lateralLayout.createSequentialGroup()
-                        .addGap(26, 26, 26)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2))
-                    .addGroup(Panel_lateralLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnCalendario))
-                    .addGroup(Panel_lateralLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnTareas))
-                    .addGroup(Panel_lateralLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnPerfil)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                    .addComponent(btnCalendario)
+                    .addComponent(btnTareas)
+                    .addComponent(btnPerfil))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         Panel_lateralLayout.setVerticalGroup(
             Panel_lateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,7 +114,7 @@ public class monthly_calendar extends javax.swing.JFrame {
                 .addComponent(btnCalendario)
                 .addGap(18, 18, 18)
                 .addComponent(btnTareas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 220, Short.MAX_VALUE)
                 .addComponent(btnPerfil)
                 .addContainerGap())
         );
@@ -127,7 +122,8 @@ public class monthly_calendar extends javax.swing.JFrame {
         background.add(Panel_lateral, java.awt.BorderLayout.WEST);
 
         PanelDerecho.setBackground(new java.awt.Color(255, 255, 255));
-        PanelDerecho.setMinimumSize(new java.awt.Dimension(400, 500));
+        PanelDerecho.setMinimumSize(new java.awt.Dimension(600, 500));
+        PanelDerecho.setPreferredSize(new java.awt.Dimension(600, 500));
         PanelDerecho.setLayout(new java.awt.BorderLayout());
 
         calendarPanel1.setMaximumSize(null);
@@ -149,14 +145,6 @@ public class monthly_calendar extends javax.swing.JFrame {
         btnTareas.setForeground(new java.awt.Color(249, 111, 11));
     }//GEN-LAST:event_btnPerfilActionPerformed
 
-    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendarioActionPerformed
-        CambiarPanel(new CalendarPanel());
-        btnCalendario.setBackground(new java.awt.Color(249, 111, 11));
-        btnCalendario.setForeground(Color.WHITE);
-        btnTareas.setBackground(Color.WHITE);
-        btnTareas.setForeground(new java.awt.Color(249, 111, 11));
-    }//GEN-LAST:event_btnCalendarioActionPerformed
-
     private void btnTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTareasActionPerformed
         CambiarPanel(new PanelTareas());
         btnCalendario.setBackground(Color.WHITE);
@@ -164,6 +152,14 @@ public class monthly_calendar extends javax.swing.JFrame {
         btnTareas.setBackground(new java.awt.Color(249, 111, 11));
         btnTareas.setForeground(Color.WHITE);
     }//GEN-LAST:event_btnTareasActionPerformed
+
+    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendarioActionPerformed
+        CambiarPanel(new CalendarPanel());
+        btnCalendario.setBackground(new java.awt.Color(249, 111, 11));
+        btnCalendario.setForeground(Color.WHITE);
+        btnTareas.setBackground(Color.WHITE);
+        btnTareas.setForeground(new java.awt.Color(249, 111, 11));
+    }//GEN-LAST:event_btnCalendarioActionPerformed
 private void CambiarPanel(javax.swing.JPanel PanelNuevo){
     PanelDerecho.removeAll();
     PanelDerecho.setLayout(new java.awt.BorderLayout());
