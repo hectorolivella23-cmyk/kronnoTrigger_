@@ -4,17 +4,23 @@
  */
 package GUI;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.time.format.TextStyle;
+
 /**
  *
  * @author joyac
  */
 public class CalendarPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form CalendarPanel
-     */
+    java.time.LocalDate hoy = java.time.LocalDate.now();
+    int mesActual = hoy.getMonthValue();
+    int añoActual = hoy.getYear();
     public CalendarPanel() {
         initComponents();
+        days.setLayout(new java.awt.GridLayout(7,7));
+        drawCalendar();
     }
 
     /**
@@ -27,41 +33,62 @@ public class CalendarPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         Month = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        mesAnterior = new javax.swing.JButton();
+        mes_año = new javax.swing.JLabel();
+        mesSiguiente = new javax.swing.JButton();
+        btnNuevoEvento = new javax.swing.JButton();
+        btnHoy = new javax.swing.JButton();
         days = new javax.swing.JPanel();
 
+        setMaximumSize(null);
         setMinimumSize(new java.awt.Dimension(600, 500));
+        setPreferredSize(null);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
         setLayout(new java.awt.BorderLayout());
 
         Month.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton1.setFont(new java.awt.Font("Roboto SemiCondensed Black", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(249, 111, 11));
-        jButton1.setText("<");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        mesAnterior.setFont(new java.awt.Font("Roboto SemiCondensed Black", 0, 18)); // NOI18N
+        mesAnterior.setForeground(new java.awt.Color(249, 111, 11));
+        mesAnterior.setText("<");
+        mesAnterior.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                mesAnteriorActionPerformed(evt);
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Roboto Condensed", 0, 18)); // NOI18N
-        jLabel1.setText("Mes Año");
+        mes_año.setFont(new java.awt.Font("Roboto Condensed", 0, 18)); // NOI18N
 
-        jButton2.setFont(new java.awt.Font("Roboto SemiCondensed Black", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(249, 111, 11));
-        jButton2.setText(">");
+        mesSiguiente.setFont(new java.awt.Font("Roboto SemiCondensed Black", 0, 18)); // NOI18N
+        mesSiguiente.setForeground(new java.awt.Color(249, 111, 11));
+        mesSiguiente.setText(">");
+        mesSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mesSiguienteActionPerformed(evt);
+            }
+        });
 
-        jButton3.setBackground(new java.awt.Color(249, 111, 11));
-        jButton3.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("+ Nuevo Evento");
+        btnNuevoEvento.setBackground(new java.awt.Color(249, 111, 11));
+        btnNuevoEvento.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
+        btnNuevoEvento.setForeground(new java.awt.Color(255, 255, 255));
+        btnNuevoEvento.setText("+ Nuevo Evento");
+        btnNuevoEvento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoEventoActionPerformed(evt);
+            }
+        });
 
-        jButton4.setFont(new java.awt.Font("Roboto Condensed", 0, 18)); // NOI18N
-        jButton4.setText("Hoy");
+        btnHoy.setFont(new java.awt.Font("Roboto Condensed", 0, 18)); // NOI18N
+        btnHoy.setText("Hoy");
+        btnHoy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHoyActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout MonthLayout = new javax.swing.GroupLayout(Month);
         Month.setLayout(MonthLayout);
@@ -69,15 +96,15 @@ public class CalendarPanel extends javax.swing.JPanel {
             MonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MonthLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(jButton1)
+                .addComponent(mesAnterior)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(mesSiguiente)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
-                .addComponent(jButton4)
+                .addComponent(mes_año)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                .addComponent(btnHoy)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addComponent(btnNuevoEvento)
                 .addGap(22, 22, 22))
         );
         MonthLayout.setVerticalGroup(
@@ -85,11 +112,11 @@ public class CalendarPanel extends javax.swing.JPanel {
             .addGroup(MonthLayout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addGroup(MonthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jLabel1)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(mesAnterior)
+                    .addComponent(mesSiguiente)
+                    .addComponent(mes_año)
+                    .addComponent(btnNuevoEvento)
+                    .addComponent(btnHoy))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
@@ -100,21 +127,97 @@ public class CalendarPanel extends javax.swing.JPanel {
         add(days, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void mesAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mesAnteriorActionPerformed
+        mesActual--;
+        if(mesActual < 1){
+            mesActual = 12;
+            añoActual--;
+        }
+        drawCalendar();
+    }//GEN-LAST:event_mesAnteriorActionPerformed
+
+    private void mesSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mesSiguienteActionPerformed
+        mesActual++;
+        if(mesActual > 12){
+            mesActual = 1;
+            añoActual++;
+        }
+        drawCalendar();
+    }//GEN-LAST:event_mesSiguienteActionPerformed
+
+    private void btnHoyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHoyActionPerformed
+        mesActual = hoy.getMonthValue();
+        añoActual = hoy.getYear();
+        drawCalendar();
+    }//GEN-LAST:event_btnHoyActionPerformed
+
+    private void btnNuevoEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoEventoActionPerformed
+        Evento NuevoEvento = new Evento();
+        NuevoEvento.setVisible(true);        
+    }//GEN-LAST:event_btnNuevoEventoActionPerformed
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_formComponentResized
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Month;
+    private javax.swing.JButton btnHoy;
+    private javax.swing.JButton btnNuevoEvento;
     private javax.swing.JPanel days;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton mesAnterior;
+    private javax.swing.JButton mesSiguiente;
+    private javax.swing.JLabel mes_año;
     // End of variables declaration//GEN-END:variables
-public static void main(String args[]) {
+private void drawCalendar(){
+    days.removeAll();
+    
+    String[] weekDays = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado", "Domingo"};
+    for(String dia: weekDays){
+        javax.swing.JLabel lblDia = new javax.swing.JLabel(dia);
+        lblDia.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDia.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14));
+        days.add(lblDia);
+    }
+    
+    java.time.YearMonth añoMes = java.time.YearMonth.of(añoActual, mesActual);
+    java.util.Locale Epañol = new java.util.Locale("es");
+    String mesEspañol = añoMes.getMonth().getDisplayName(TextStyle.FULL, Epañol);
+    mes_año.setText(mesEspañol.toUpperCase() + " " + añoActual);
+    java.time.LocalDate primerDia = añoMes.atDay(1);
+    int diasMes = añoMes.lengthOfMonth();
+    int inicioSemana = primerDia.getDayOfWeek().getValue();
+    int contadorDias = 1;
+    for(int i = 1; i <= 42; i++){
+        javax.swing.JButton btnDia = new javax.swing.JButton();
+        btnDia.setFocusPainted(false);
+        if(i < inicioSemana || contadorDias > diasMes){
+            btnDia.setText("");
+            btnDia.setEnabled(false);
+            btnDia.setBackground(new java.awt.Color(240, 240, 240));
+        } else{
+            btnDia.setText(String.valueOf(contadorDias));
+            int dia = contadorDias;
+            btnDia.setBackground(Color.WHITE);
+            btnDia.addActionListener(new java.awt.event.ActionListener() {
+               public void actionPerformed(java.awt.event.ActionEvent evt) {
+                   Evento NuevoEvento = new Evento(dia, mesActual, añoActual);
+                   NuevoEvento.setVisible(true); 
+                }
+            });
+            if(añoActual == hoy.getYear() && mesActual == hoy.getMonthValue() && contadorDias == hoy.getDayOfMonth()){
+                btnDia.setBackground(new java.awt.Color(249, 111, 11));
+                btnDia.setForeground(Color.WHITE);
+            }
+            contadorDias++;
+        }
+        days.add(btnDia);
+    }
+    days.revalidate();
+    days.repaint();
+}
+    public static void main(String args[]) {
     // Esto crea una ventana temporal solo para probar este panel
     java.awt.EventQueue.invokeLater(new Runnable() {
         public void run() {

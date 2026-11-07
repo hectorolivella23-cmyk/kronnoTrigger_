@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import java.awt.Color;
+
 /**
  *
  * @author joyac
@@ -27,68 +29,148 @@ public class monthly_calendar extends javax.swing.JFrame {
     private void initComponents() {
 
         background = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        Panel_lateral = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        btnCalendario = new javax.swing.JButton();
+        btnTareas = new javax.swing.JButton();
+        btnPerfil = new javax.swing.JButton();
+        PanelDerecho = new javax.swing.JPanel();
+        calendarPanel1 = new GUI.CalendarPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(1024, 680));
+        setTitle("Panel Principal");
+        setMinimumSize(new java.awt.Dimension(800, 500));
 
         background.setBackground(new java.awt.Color(255, 255, 255));
         background.setMinimumSize(new java.awt.Dimension(800, 500));
-        background.setPreferredSize(new java.awt.Dimension(1280, 800));
-        background.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        background.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setBackground(new java.awt.Color(249, 111, 11));
-        jPanel2.setToolTipText("");
-        jPanel2.setMinimumSize(new java.awt.Dimension(200, 500));
+        Panel_lateral.setBackground(new java.awt.Color(245, 245, 245));
+        Panel_lateral.setToolTipText("");
+        Panel_lateral.setMinimumSize(new java.awt.Dimension(200, 500));
+        Panel_lateral.setPreferredSize(new java.awt.Dimension(200, 500));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+        jLabel1.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/logo kronnotrigger.png"))); // NOI18N
+        jLabel1.setText("Kronno");
+
+        jLabel2.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(249, 111, 11));
+        jLabel2.setText("Trigger");
+
+        btnCalendario.setBackground(new java.awt.Color(249, 111, 11));
+        btnCalendario.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
+        btnCalendario.setForeground(new java.awt.Color(255, 255, 255));
+        btnCalendario.setText("Calendario");
+        btnCalendario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalendarioActionPerformed(evt);
+            }
+        });
+
+        btnTareas.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
+        btnTareas.setForeground(new java.awt.Color(249, 111, 11));
+        btnTareas.setText("Tareas Pendientes");
+        btnTareas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTareasActionPerformed(evt);
+            }
+        });
+
+        btnPerfil.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
+        btnPerfil.setText("Perfil");
+        btnPerfil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPerfilActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout Panel_lateralLayout = new javax.swing.GroupLayout(Panel_lateral);
+        Panel_lateral.setLayout(Panel_lateralLayout);
+        Panel_lateralLayout.setHorizontalGroup(
+            Panel_lateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_lateralLayout.createSequentialGroup()
+                .addGroup(Panel_lateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(Panel_lateralLayout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2))
+                    .addGroup(Panel_lateralLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnCalendario))
+                    .addGroup(Panel_lateralLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnTareas))
+                    .addGroup(Panel_lateralLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnPerfil)))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+        Panel_lateralLayout.setVerticalGroup(
+            Panel_lateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_lateralLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(Panel_lateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(68, 68, 68)
+                .addComponent(btnCalendario)
+                .addGap(18, 18, 18)
+                .addComponent(btnTareas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                .addComponent(btnPerfil)
+                .addContainerGap())
         );
 
-        background.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 500));
+        background.add(Panel_lateral, java.awt.BorderLayout.WEST);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setMinimumSize(new java.awt.Dimension(400, 500));
+        PanelDerecho.setBackground(new java.awt.Color(255, 255, 255));
+        PanelDerecho.setMinimumSize(new java.awt.Dimension(400, 500));
+        PanelDerecho.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
-        );
+        calendarPanel1.setMaximumSize(null);
+        calendarPanel1.setPreferredSize(null);
+        PanelDerecho.add(calendarPanel1, java.awt.BorderLayout.CENTER);
 
-        background.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 600, -1));
+        background.add(PanelDerecho, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 480, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 300, Short.MAX_VALUE))
-        );
+        getContentPane().add(background, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerfilActionPerformed
+        CambiarPanel(new PanelPerfil());
+        btnCalendario.setBackground(Color.WHITE);
+        btnCalendario.setForeground(new java.awt.Color(249, 111, 11));
+        btnTareas.setBackground(Color.WHITE);
+        btnTareas.setForeground(new java.awt.Color(249, 111, 11));
+    }//GEN-LAST:event_btnPerfilActionPerformed
+
+    private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendarioActionPerformed
+        CambiarPanel(new CalendarPanel());
+        btnCalendario.setBackground(new java.awt.Color(249, 111, 11));
+        btnCalendario.setForeground(Color.WHITE);
+        btnTareas.setBackground(Color.WHITE);
+        btnTareas.setForeground(new java.awt.Color(249, 111, 11));
+    }//GEN-LAST:event_btnCalendarioActionPerformed
+
+    private void btnTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTareasActionPerformed
+        CambiarPanel(new PanelTareas());
+        btnCalendario.setBackground(Color.WHITE);
+        btnCalendario.setForeground(new java.awt.Color(249, 111, 11));
+        btnTareas.setBackground(new java.awt.Color(249, 111, 11));
+        btnTareas.setForeground(Color.WHITE);
+    }//GEN-LAST:event_btnTareasActionPerformed
+private void CambiarPanel(javax.swing.JPanel PanelNuevo){
+    PanelDerecho.removeAll();
+    PanelDerecho.setLayout(new java.awt.BorderLayout());
+    PanelDerecho.add(PanelNuevo, java.awt.BorderLayout.CENTER);
+    PanelDerecho.revalidate();
+    PanelDerecho.repaint();
+}
     /**
      * @param args the command line arguments
      */
@@ -125,8 +207,14 @@ public class monthly_calendar extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel PanelDerecho;
+    private javax.swing.JPanel Panel_lateral;
     private javax.swing.JPanel background;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JButton btnCalendario;
+    private javax.swing.JButton btnPerfil;
+    private javax.swing.JButton btnTareas;
+    private GUI.CalendarPanel calendarPanel1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }

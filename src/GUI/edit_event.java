@@ -28,7 +28,6 @@ public class edit_event extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         newevent = new javax.swing.JLabel();
-        close = new javax.swing.JButton();
         title = new javax.swing.JLabel();
         title_text = new javax.swing.JTextField();
         description = new javax.swing.JLabel();
@@ -48,100 +47,93 @@ public class edit_event extends javax.swing.JFrame {
         btn_save = new javax.swing.JButton();
         btn_eliminated = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        newevent.setFont(new java.awt.Font("Roboto Condensed Medium", 0, 18)); // NOI18N
         newevent.setText("Editar Evento / Tarea");
+        newevent.setFont(new java.awt.Font("Roboto Condensed Medium", 0, 18)); // NOI18N
 
-        close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Xbutton.jpg"))); // NOI18N
-        close.setBorder(null);
-        close.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeActionPerformed(evt);
-            }
-        });
-
+        title.setText("TÍTULO");
         title.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         title.setForeground(new java.awt.Color(153, 153, 153));
-        title.setText("TÍTULO");
 
-        title_text.setBackground(new java.awt.Color(240, 240, 240));
         title_text.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 12)); // NOI18N
+        title_text.setBackground(new java.awt.Color(240, 240, 240));
         title_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 title_textActionPerformed(evt);
             }
         });
 
+        description.setText("RECURRENCIA");
         description.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         description.setForeground(new java.awt.Color(153, 153, 153));
-        description.setText("RECURRENCIA");
 
-        description_text.setBackground(new java.awt.Color(240, 240, 240));
         description_text.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 12)); // NOI18N
+        description_text.setBackground(new java.awt.Color(240, 240, 240));
         description_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 description_textActionPerformed(evt);
             }
         });
 
+        date.setText("FECHA");
         date.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         date.setForeground(new java.awt.Color(153, 153, 153));
-        date.setText("FECHA");
 
+        initial_time.setText("HORA INICIO");
         initial_time.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         initial_time.setForeground(new java.awt.Color(153, 153, 153));
-        initial_time.setText("HORA INICIO");
 
         datePicker.setBackground(new java.awt.Color(240, 240, 240));
         datePicker.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 12)); // NOI18N
 
         initial_timePicker.setBackground(new java.awt.Color(240, 240, 240));
 
+        final_time.setText("HORA FIN");
         final_time.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         final_time.setForeground(new java.awt.Color(153, 153, 153));
-        final_time.setText("HORA FIN");
 
         final_timePicker.setBackground(new java.awt.Color(240, 240, 240));
 
+        description1.setText("ESTADO");
         description1.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         description1.setForeground(new java.awt.Color(153, 153, 153));
-        description1.setText("ESTADO");
 
-        btn_pendiente.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         btn_pendiente.setText("Pendiente");
+        btn_pendiente.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         btn_pendiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_pendienteActionPerformed(evt);
             }
         });
 
-        btn_completado.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         btn_completado.setText("Completado");
+        btn_completado.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         btn_completado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_completadoActionPerformed(evt);
             }
         });
 
+        description2.setText("DESCRIPCIÓN");
         description2.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         description2.setForeground(new java.awt.Color(153, 153, 153));
-        description2.setText("DESCRIPCIÓN");
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No", "Cada día", "Cada mes", "Cada año" }));
 
-        btn_cancel.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         btn_cancel.setText("Cancelar");
+        btn_cancel.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
 
+        btn_save.setText("Guardar");
         btn_save.setBackground(new java.awt.Color(249, 111, 11));
         btn_save.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
-        btn_save.setText("Guardar");
+        btn_save.setForeground(new java.awt.Color(255, 255, 255));
 
+        btn_eliminated.setText("Eliminar");
         btn_eliminated.setBackground(new java.awt.Color(255, 102, 102));
         btn_eliminated.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
-        btn_eliminated.setText("Eliminar");
         btn_eliminated.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_eliminatedActionPerformed(evt);
@@ -158,10 +150,6 @@ public class edit_event extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(title_text)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(newevent)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(close))
                             .addComponent(description_text)
                             .addComponent(datePicker, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -180,6 +168,7 @@ public class edit_event extends javax.swing.JFrame {
                                     .addComponent(final_timePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(newevent, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(description1, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                         .addComponent(btn_pendiente, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -209,9 +198,7 @@ public class edit_event extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(newevent)
-                    .addComponent(close))
+                .addComponent(newevent)
                 .addGap(18, 18, 18)
                 .addComponent(title)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -263,10 +250,6 @@ public class edit_event extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_closeActionPerformed
 
     private void title_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_title_textActionPerformed
         // TODO add your handling code here:
@@ -331,7 +314,6 @@ public class edit_event extends javax.swing.JFrame {
     private javax.swing.JButton btn_eliminated;
     private javax.swing.JButton btn_pendiente;
     private javax.swing.JButton btn_save;
-    private javax.swing.JButton close;
     private javax.swing.JLabel date;
     private com.github.lgooddatepicker.components.DatePicker datePicker;
     private javax.swing.JLabel description;

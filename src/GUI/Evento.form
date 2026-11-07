@@ -2,7 +2,7 @@
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
-    <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="ff" green="ff" red="ff" type="rgb"/>
     </Property>
@@ -52,11 +52,6 @@
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="title_text" alignment="1" max="32767" attributes="0"/>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="newevent" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="close" min="-2" max="-2" attributes="0"/>
-                              </Group>
                               <Component id="description_text" alignment="1" max="32767" attributes="0"/>
                               <Component id="datePicker" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
@@ -81,6 +76,7 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="1" attributes="0">
+                                      <Component id="newevent" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="description1" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="btn_pendiente" min="-2" pref="164" max="-2" attributes="0"/>
@@ -120,10 +116,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="newevent" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="close" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="newevent" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="title" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -170,43 +163,30 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="newevent">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Nuevo Evento / Tarea"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Condensed Medium" size="18" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Nuevo Evento / Tarea"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="close">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Resources/Xbutton.jpg"/>
-            </Property>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="null"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="title">
           <Properties>
+            <Property name="text" type="java.lang.String" value="T&#xcd;TULO"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="T&#xcd;TULO"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="title_text">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="f0" green="f0" red="f0" type="rgb"/>
-            </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto SemiCondensed" size="12" style="0"/>
+            </Property>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="f0" green="f0" red="f0" type="rgb"/>
             </Property>
           </Properties>
           <Events>
@@ -215,22 +195,22 @@
         </Component>
         <Component class="javax.swing.JLabel" name="description">
           <Properties>
+            <Property name="text" type="java.lang.String" value="RECURRENCIA"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="RECURRENCIA"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="description_text">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="f0" green="f0" red="f0" type="rgb"/>
-            </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto SemiCondensed" size="12" style="0"/>
+            </Property>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="f0" green="f0" red="f0" type="rgb"/>
             </Property>
           </Properties>
           <Events>
@@ -239,24 +219,24 @@
         </Component>
         <Component class="javax.swing.JLabel" name="date">
           <Properties>
+            <Property name="text" type="java.lang.String" value="FECHA"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="FECHA"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="initial_time">
           <Properties>
+            <Property name="text" type="java.lang.String" value="HORA INICIO"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="HORA INICIO"/>
           </Properties>
         </Component>
         <Component class="com.github.lgooddatepicker.components.DatePicker" name="datePicker">
@@ -278,13 +258,13 @@
         </Component>
         <Component class="javax.swing.JLabel" name="final_time">
           <Properties>
+            <Property name="text" type="java.lang.String" value="HORA FIN"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="HORA FIN"/>
           </Properties>
         </Component>
         <Component class="com.github.lgooddatepicker.components.TimePicker" name="final_timePicker">
@@ -296,21 +276,21 @@
         </Component>
         <Component class="javax.swing.JLabel" name="description1">
           <Properties>
+            <Property name="text" type="java.lang.String" value="ESTADO"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="ESTADO"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btn_pendiente">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Pendiente"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Pendiente"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_pendienteActionPerformed"/>
@@ -318,10 +298,10 @@
         </Component>
         <Component class="javax.swing.JButton" name="btn_completado">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Completado"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Completado"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_completadoActionPerformed"/>
@@ -329,13 +309,13 @@
         </Component>
         <Component class="javax.swing.JLabel" name="description2">
           <Properties>
+            <Property name="text" type="java.lang.String" value="DESCRIPCI&#xd3;N"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="DESCRIPCI&#xd3;N"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="jComboBox1">
@@ -355,21 +335,21 @@
         </Component>
         <Component class="javax.swing.JButton" name="btn_cancel">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Cancelar"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Cancelar"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btn_save">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Guardar"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="b" green="6f" red="f9" type="rgb"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Roboto Medium" size="12" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Guardar"/>
           </Properties>
         </Component>
       </SubComponents>
