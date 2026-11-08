@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package GUI;
-
+import modelo.Tarea;
 /**
  *
  * @author joyac
@@ -20,6 +20,7 @@ public class Evento extends javax.swing.JFrame {
         initComponents();
         java.time.LocalDate fechaElegida = java.time.LocalDate.of(año, mes, dia);
         datePicker.setDate(fechaElegida);
+        initial_timePicker.setTimeToNow();
     }
 
     /**
@@ -44,12 +45,11 @@ public class Evento extends javax.swing.JFrame {
         final_time = new javax.swing.JLabel();
         final_timePicker = new com.github.lgooddatepicker.components.TimePicker();
         description1 = new javax.swing.JLabel();
-        btn_pendiente = new javax.swing.JButton();
-        btn_completado = new javax.swing.JButton();
         description2 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         btn_cancel = new javax.swing.JButton();
         btn_save = new javax.swing.JButton();
+        jComboBox2 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -71,7 +71,7 @@ public class Evento extends javax.swing.JFrame {
             }
         });
 
-        description.setText("RECURRENCIA");
+        description.setText("RECURRENCIA SEMANAL");
         description.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         description.setForeground(new java.awt.Color(153, 153, 153));
 
@@ -95,45 +95,45 @@ public class Evento extends javax.swing.JFrame {
         datePicker.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 12)); // NOI18N
 
         initial_timePicker.setBackground(new java.awt.Color(240, 240, 240));
+        initial_timePicker.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
 
         final_time.setText("HORA FIN");
         final_time.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         final_time.setForeground(new java.awt.Color(153, 153, 153));
 
         final_timePicker.setBackground(new java.awt.Color(240, 240, 240));
+        final_timePicker.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
 
         description1.setText("ESTADO");
         description1.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         description1.setForeground(new java.awt.Color(153, 153, 153));
 
-        btn_pendiente.setText("Pendiente");
-        btn_pendiente.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
-        btn_pendiente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_pendienteActionPerformed(evt);
-            }
-        });
-
-        btn_completado.setText("Completado");
-        btn_completado.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
-        btn_completado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_completadoActionPerformed(evt);
-            }
-        });
-
         description2.setText("DESCRIPCIÓN");
         description2.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         description2.setForeground(new java.awt.Color(153, 153, 153));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No", "Cada día", "Cada mes", "Cada año" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No", "Si" }));
+        jComboBox1.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
 
         btn_cancel.setText("Cancelar");
         btn_cancel.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
+        btn_cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cancelActionPerformed(evt);
+            }
+        });
 
         btn_save.setText("Guardar");
         btn_save.setBackground(new java.awt.Color(249, 111, 11));
         btn_save.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
+        btn_save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_saveActionPerformed(evt);
+            }
+        });
+
+        jComboBox2.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pendiente", "En curso", "Completado", "Vencido" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -164,11 +164,7 @@ public class Evento extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(newevent, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(description1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(btn_pendiente, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btn_completado, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(description1, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(27, 27, 27))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -180,10 +176,10 @@ public class Evento extends javax.swing.JFrame {
                                 .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btn_save, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(date)
-                                .addComponent(description2)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(date, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(description2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, 340, Short.MAX_VALUE)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -214,9 +210,7 @@ public class Evento extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(description1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btn_completado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_pendiente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(description)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -250,15 +244,17 @@ public class Evento extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_description_textActionPerformed
 
-    private void btn_pendienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_pendienteActionPerformed
-        btn_pendiente.setBackground(new java.awt.Color(249,111,11));
-        btn_completado.setBackground(new java.awt.Color(250,250,250));
-    }//GEN-LAST:event_btn_pendienteActionPerformed
+    private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
+        if(title_text.getText().length() == 0){
+            javax.swing.JOptionPane.showMessageDialog(this, "ERROR: el titulo esta vacio");
+        }else{
+            Tarea evento = new Tarea(title_text.getText(), description_text.getText(), 1, datePicker.getDate(), initial_timePicker.getTime());           
+        }        
+    }//GEN-LAST:event_btn_saveActionPerformed
 
-    private void btn_completadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_completadoActionPerformed
-        btn_completado.setBackground(new java.awt.Color(249,111,11));
-        btn_pendiente.setBackground(new java.awt.Color(250,250,250));
-    }//GEN-LAST:event_btn_completadoActionPerformed
+    private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btn_cancelActionPerformed
 
     /**
      * @param args the command line arguments
@@ -298,8 +294,6 @@ public class Evento extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_cancel;
-    private javax.swing.JButton btn_completado;
-    private javax.swing.JButton btn_pendiente;
     private javax.swing.JButton btn_save;
     private javax.swing.JLabel date;
     private com.github.lgooddatepicker.components.DatePicker datePicker;
@@ -312,6 +306,7 @@ public class Evento extends javax.swing.JFrame {
     private javax.swing.JLabel initial_time;
     private com.github.lgooddatepicker.components.TimePicker initial_timePicker;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel newevent;
     private javax.swing.JLabel title;

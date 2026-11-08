@@ -5,7 +5,6 @@
 package GUI;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.time.format.TextStyle;
 
 /**
@@ -13,7 +12,7 @@ import java.time.format.TextStyle;
  * @author joyac
  */
 public class CalendarPanel extends javax.swing.JPanel {
-
+    java.time.LocalTime hora = java.time.LocalTime.now();
     java.time.LocalDate hoy = java.time.LocalDate.now();
     int mesActual = hoy.getMonthValue();
     int añoActual = hoy.getYear();
@@ -152,7 +151,7 @@ public class CalendarPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnHoyActionPerformed
 
     private void btnNuevoEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoEventoActionPerformed
-        Evento NuevoEvento = new Evento();
+        Evento NuevoEvento = new Evento(hoy.getDayOfMonth(), hoy.getDayOfMonth(), hoy.getYear());
         NuevoEvento.setVisible(true);        
     }//GEN-LAST:event_btnNuevoEventoActionPerformed
 

@@ -191,6 +191,7 @@ public class PanelPerfil extends javax.swing.JPanel {
             }
             catch(Exception e){
                 System.out.println("Error al cargar la imagen: " + e.getMessage());
+                javax.swing.JOptionPane.showMessageDialog(this, "ERROR: seleccione una imagen de tipo JPG o PNG " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnChangePorfileActionPerformed
