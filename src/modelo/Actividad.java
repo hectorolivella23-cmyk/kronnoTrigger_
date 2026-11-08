@@ -2,8 +2,9 @@ package modelo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.io.Serializable;
 
-public class Actividad {
+public class Actividad implements Serializable{
 
     private static int contadorId = 1;
     private String nombreActividad;
