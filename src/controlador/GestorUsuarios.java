@@ -10,6 +10,10 @@ public class GestorUsuarios {
     public GestorUsuarios() {
         usuarios = new ArrayList<>();
     }
+    
+    public GestorUsuarios(ArrayList<Usuario> usuarios){
+        this.usuarios = usuarios;
+    }
  
     public boolean registrarUsuario(Usuario usuario) {
  

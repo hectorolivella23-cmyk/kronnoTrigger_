@@ -11,6 +11,11 @@ public class Tarea extends Actividad{
         super(nombreActividad, descripcionActividad, id, fecha, hora);
         this.estado = EstadoTarea.PENDIENTE;
     }
+    
+    public Tarea(String nombreActividad, String descripsionActividad, LocalDate fecha, LocalTime hora){
+        super(nombreActividad, descripsionActividad, fecha, hora);
+        this.estado = EstadoTarea.PENDIENTE;
+    }
 
     public EstadoTarea getEstado() {
         return estado;
