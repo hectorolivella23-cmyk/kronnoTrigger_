@@ -27,6 +27,10 @@ public class Actividad implements Serializable{
         this.nombreActividad = nombreActividad;
         this.descripcionActividad = descripcionActividad;
         this.id = id;
+        //Si el id cargado es mayor o igual al contador, lo adelanta para que las nuevas actividades no repitan IDs.
+        if(id >= contadorId){
+            contadorId = id + 1;
+        }
         this.fecha = fecha;
         this.hora = hora;
     }
