@@ -7,6 +7,9 @@
             <file>file:/C:/Users/Hector/Documents/NetBeansProjects/kronnoTrigger/src/controlador/GestorUsuarios.java</file>
             <file>file:/C:/Users/Hector/Documents/NetBeansProjects/kronnoTrigger/src/modelo/Usuario.java</file>
             <file>file:/C:/Users/Hector/Documents/NetBeansProjects/kronnoTrigger/src/modelo/Actividad.java</file>
+            <file>file:/C:/Users/Hector/Documents/NetBeansProjects/kronnoTrigger/src/modelo/Tarea.java</file>
+            <file>file:/C:/Users/Hector/Documents/NetBeansProjects/kronnoTrigger/src/modelo/EstadoTarea.java</file>
+            <file>file:/C:/Users/Hector/Documents/NetBeansProjects/kronnoTrigger/src/modelo/HorarioRecurrente.java</file>
         </group>
     </open-files>
 </project-private>
