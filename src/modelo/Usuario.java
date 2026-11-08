@@ -22,6 +22,14 @@ public class Usuario {
     public String getPassword() {
         return password;
     }
+    
+    public void setUser(String username) {
+        this.user = username;
+    }
+    
+    public void setPassword(String pass) {
+        this.password = pass;
+    }
  
     public ArrayList<Actividad> getActividades() {
         return actividades;

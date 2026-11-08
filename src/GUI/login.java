@@ -3,7 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package GUI;
-
+import controlador.GestorUsuarios;
+import modelo.Usuario;
 /**
  *
  * @author joyac
@@ -13,8 +14,10 @@ public class login extends javax.swing.JFrame {
     /**
      * Creates new form login
      */
-    public login() {
+    private GestorUsuarios gestor;
+    public login(GestorUsuarios gestor) {
         initComponents();
+        this.gestor = gestor;
     }
 
     /**
@@ -33,9 +36,9 @@ public class login extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         register_button = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtuser = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        txtpassword = new javax.swing.JPasswordField();
         login_button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -78,11 +81,11 @@ public class login extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(153, 153, 153));
         jLabel5.setText("USUARIO");
 
-        jTextField1.setBackground(new java.awt.Color(240, 240, 240));
-        jTextField1.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 12)); // NOI18N
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtuser.setBackground(new java.awt.Color(240, 240, 240));
+        txtuser.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 12)); // NOI18N
+        txtuser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtuserActionPerformed(evt);
             }
         });
 
@@ -90,8 +93,8 @@ public class login extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(153, 153, 153));
         jLabel6.setText("CONTRASEÑA");
 
-        jPasswordField1.setBackground(new java.awt.Color(240, 240, 240));
-        jPasswordField1.setFont(new java.awt.Font("Roboto SemiBold", 0, 12)); // NOI18N
+        txtpassword.setBackground(new java.awt.Color(240, 240, 240));
+        txtpassword.setFont(new java.awt.Font("Roboto SemiBold", 0, 12)); // NOI18N
 
         login_button.setBackground(new java.awt.Color(249, 111, 11));
         login_button.setFont(new java.awt.Font("Roboto Medium", 0, 14)); // NOI18N
@@ -110,7 +113,7 @@ public class login extends javax.swing.JFrame {
             .addGroup(BackgroundLayout.createSequentialGroup()
                 .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(login_button, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtpassword, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(BackgroundLayout.createSequentialGroup()
                             .addGap(80, 80, 80)
@@ -120,7 +123,7 @@ public class login extends javax.swing.JFrame {
                         .addGroup(BackgroundLayout.createSequentialGroup()
                             .addGap(37, 37, 37)
                             .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtuser, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel5)
@@ -148,11 +151,11 @@ public class login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtuser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(login_button)
                 .addContainerGap(36, Short.MAX_VALUE))
@@ -177,19 +180,26 @@ public class login extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void register_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_register_buttonActionPerformed
-        register ventanaRegistro = new register();
+        register ventanaRegistro = new register(gestor);
         
         ventanaRegistro.setVisible(true);
         
         this.dispose();
     }//GEN-LAST:event_register_buttonActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtuserActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtuserActionPerformed
 
     private void login_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_buttonActionPerformed
-        // TODO add your handling code here:
+        String pass = new String(txtpassword.getPassword());
+        Usuario user = gestor.iniciarSesion(txtuser.getText(), pass);
+        if(user != null){
+            new monthly_calendar(gestor, user).setVisible(true);
+            this.dispose();
+        }else{
+            javax.swing.JOptionPane.showMessageDialog(this, "ERROR: Nombre de usuario o contraseña incorrectos");
+        }
     }//GEN-LAST:event_login_buttonActionPerformed
 
     /**
@@ -222,7 +232,7 @@ public class login extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new login().setVisible(true);
+                new login(new GestorUsuarios()).setVisible(true);
             }
         });
     }
@@ -235,9 +245,9 @@ public class login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton login_button;
     private javax.swing.JButton register_button;
+    private javax.swing.JPasswordField txtpassword;
+    private javax.swing.JTextField txtuser;
     // End of variables declaration//GEN-END:variables
 }

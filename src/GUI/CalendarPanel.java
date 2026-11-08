@@ -151,7 +151,7 @@ public class CalendarPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnHoyActionPerformed
 
     private void btnNuevoEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoEventoActionPerformed
-        Evento NuevoEvento = new Evento(hoy.getDayOfMonth(), hoy.getDayOfMonth(), hoy.getYear());
+        Evento NuevoEvento = new Evento(hoy.getDayOfMonth(), hoy.getMonthValue(), hoy.getYear());
         NuevoEvento.setVisible(true);        
     }//GEN-LAST:event_btnNuevoEventoActionPerformed
 

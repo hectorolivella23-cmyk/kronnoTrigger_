@@ -4,17 +4,21 @@
  */
 package GUI;
 import modelo.Usuario;
+import controlador.GestorUsuarios;
+import persistencia.EscrituraLectura;
 /**
  *
  * @author joyac
  */
 public class register extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form register
      */
-    public register() {
+    private GestorUsuarios gestor;
+    public register(GestorUsuarios gestor) {
         initComponents();
+        this.gestor = gestor;
     }
 
     /**
@@ -191,9 +195,13 @@ public class register extends javax.swing.JFrame {
         if(pass1.length() >= 8){
             if(pass1.equals(pass2)){
             Usuario user = new Usuario(txtuser.getText(), pass2);
-            monthly_calendar Panel = new monthly_calendar();
-            Panel.setVisible(true);
-            this.dispose();
+                if(gestor.registrarUsuario(user)){
+                    new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
+                    new monthly_calendar(gestor, user).setVisible(true);
+                    this.dispose();
+                }else{
+                    javax.swing.JOptionPane.showMessageDialog(this, "ERROR: Nombre de usuario en uso seleccione otro");
+                }
             }else{
             javax.swing.JOptionPane.showMessageDialog(this, "ERROR: Las contraseñas no coinciden");
             }
@@ -211,7 +219,7 @@ public class register extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void login_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_buttonActionPerformed
-        login ventanaLogin = new login();
+        login ventanaLogin = new login(gestor);
 
         ventanaLogin.setVisible(true);
 
@@ -248,7 +256,7 @@ public class register extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new register().setVisible(true);
+                new register(new GestorUsuarios()).setVisible(true);
             }
         });
     }

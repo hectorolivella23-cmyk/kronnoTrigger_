@@ -3,7 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package GUI;
-
+import modelo.Usuario;
+import controlador.GestorUsuarios;
 /**
  *
  * @author joyac
@@ -13,8 +14,12 @@ public class PanelPerfil extends javax.swing.JPanel {
     /**
      * Creates new form PanelPerfil
      */
-    public PanelPerfil() {
+    private GestorUsuarios gestor;
+    private Usuario user;
+    public PanelPerfil(GestorUsuarios gestor, Usuario user) {
         initComponents();
+        this.gestor = gestor;
+        this.user = user;
     }
 
     /**
@@ -38,7 +43,7 @@ public class PanelPerfil extends javax.swing.JPanel {
         ActualPassword = new javax.swing.JPasswordField();
         lblNewPassword = new javax.swing.JLabel();
         NewPassword = new javax.swing.JPasswordField();
-        btnChangePorfile = new javax.swing.JButton();
+        btndeleteuser = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(600, 500));
         setLayout(new java.awt.BorderLayout());
@@ -56,6 +61,7 @@ public class PanelPerfil extends javax.swing.JPanel {
         jLabel3.setText("Nombre de Usuario");
 
         changeuser.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
+        changeuser.setText(user.getUser());
         changeuser.setName(""); // NOI18N
         changeuser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,6 +73,11 @@ public class PanelPerfil extends javax.swing.JPanel {
         btnSave.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
         btnSave.setForeground(new java.awt.Color(255, 255, 255));
         btnSave.setText("Guardar");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         btnCancel.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
         btnCancel.setText("Cancelar");
@@ -90,11 +101,13 @@ public class PanelPerfil extends javax.swing.JPanel {
             }
         });
 
-        btnChangePorfile.setFont(new java.awt.Font("Roboto Condensed", 0, 18)); // NOI18N
-        btnChangePorfile.setText("Cambiar foto de perfil");
-        btnChangePorfile.addActionListener(new java.awt.event.ActionListener() {
+        btndeleteuser.setBackground(new java.awt.Color(255, 0, 0));
+        btndeleteuser.setFont(new java.awt.Font("Roboto Condensed", 0, 18)); // NOI18N
+        btndeleteuser.setForeground(new java.awt.Color(255, 255, 255));
+        btndeleteuser.setText("Eliminar Cuenta");
+        btndeleteuser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangePorfileActionPerformed(evt);
+                btndeleteuserActionPerformed(evt);
             }
         });
 
@@ -110,14 +123,17 @@ public class PanelPerfil extends javax.swing.JPanel {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnSave)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnCancel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnSave))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(porfile)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(btnCancel)
-                                        .addComponent(btnChangePorfile)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(25, 25, 25)
+                                        .addComponent(btndeleteuser)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
                                     .addComponent(changeuser, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -126,7 +142,7 @@ public class PanelPerfil extends javax.swing.JPanel {
                                     .addComponent(ActualPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lblNewPassword)
                                     .addComponent(NewPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(43, Short.MAX_VALUE))))
+                        .addContainerGap(42, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,7 +154,7 @@ public class PanelPerfil extends javax.swing.JPanel {
                         .addGap(69, 69, 69)
                         .addComponent(porfile)
                         .addGap(18, 18, 18)
-                        .addComponent(btnChangePorfile))
+                        .addComponent(btndeleteuser))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(56, 56, 56)
                         .addComponent(jLabel3)
@@ -172,37 +188,30 @@ public class PanelPerfil extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_NewPasswordActionPerformed
 
-    private void btnChangePorfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePorfileActionPerformed
-        javax.swing.JFileChooser explorador = new javax.swing.JFileChooser();
-        javax.swing.filechooser.FileNameExtensionFilter filtro = new javax.swing.filechooser.FileNameExtensionFilter("Imágenes (JPG, PNG)", "jpg", "jpeg", "png");
-        explorador.setFileFilter(filtro);
-        int respuesta = explorador.showOpenDialog(null);
-        if(respuesta == javax.swing.JFileChooser.APPROVE_OPTION){
-            try{
-                java.io.File imagenElegida = explorador.getSelectedFile();
-                java.awt.image.BufferedImage nuevaImagen = javax.imageio.ImageIO.read(imagenElegida);
-                int alto = 200;
-                int ancho = 200;
-                java.awt.Image imagenAjustada = nuevaImagen.getScaledInstance(ancho, alto, java.awt.Image.SCALE_SMOOTH);
-                porfile.setIcon(new javax.swing.ImageIcon(imagenAjustada));
-                porfile.setText("");
-                porfile.revalidate();
-                porfile.repaint();
-            }
-            catch(Exception e){
-                System.out.println("Error al cargar la imagen: " + e.getMessage());
-                javax.swing.JOptionPane.showMessageDialog(this, "ERROR: seleccione una imagen de tipo JPG o PNG " + e.getMessage());
+    private void btndeleteuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeleteuserActionPerformed
+        
+    }//GEN-LAST:event_btndeleteuserActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        String newpass = new String(NewPassword.getPassword());
+        String actualpass = new String(ActualPassword.getPassword());
+        if(actualpass.length() == 0 && newpass.length() == 0){
+            user.setUser(changeuser.getText());
+        }else{
+            if(actualpass.equals(user.getPassword())){
+                user.setUser(changeuser.getText());
+                user.setPassword(newpass);
             }
         }
-    }//GEN-LAST:event_btnChangePorfileActionPerformed
+    }//GEN-LAST:event_btnSaveActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField ActualPassword;
     private javax.swing.JPasswordField NewPassword;
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnChangePorfile;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton btndeleteuser;
     private javax.swing.JTextField changeuser;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
