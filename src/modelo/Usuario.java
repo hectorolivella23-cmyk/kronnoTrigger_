@@ -75,13 +75,34 @@ public class Usuario {
         if (existente == null) {
             return false;
         }
+        
+        if (existente instanceof HorarioRecurrente && nueva instanceof HorarioRecurrente){
+            ((HorarioRecurrente) existente).setDia(((HorarioRecurrente) nueva).getDia());
+        }
  
         existente.setNombreActividad(nueva.getNombreActividad());
         existente.setDescripcionActividad(nueva.getDescripcionActividad());
         existente.setFecha(nueva.getFecha());
         existente.setHora(nueva.getHora());
         
+        if(existente instanceof HorarioRecurrente && nueva instanceof HorarioRecurrente){
+            HorarioRecurrente horario = (HorarioRecurrente) existente;
+            HorarioRecurrente otro = (HorarioRecurrente) nueva;
+            horario.setHoraInicio(otro.getHoraInicio());
+            horario.setHoraFin(otro.getHoraFin());
+            horario.setFechaFinRecurrencia(otro.getFechaFinRecurrencia());
+        }
+        
+        if(existente instanceof Tarea){
+            Tarea tarea = (Tarea) existente;
+            if(tarea.getEstado() == EstadoTarea.VENCIDA){
+                tarea.marcarPendiente();
+            }
+            tarea.actualizarEstado();
+        }
+        
         return true;
+    
     }
     
     @Override

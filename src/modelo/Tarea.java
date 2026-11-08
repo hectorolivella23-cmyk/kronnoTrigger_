@@ -2,6 +2,7 @@ package modelo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class Tarea extends Actividad{
 
@@ -39,10 +40,10 @@ public class Tarea extends Actividad{
     
     public void actualizarEstado(){
         
-        LocalDate hoy = LocalDate.now();
+        LocalDateTime limite = LocalDateTime.of(getFecha(), getHora());
         
-        if(getFecha().isBefore(hoy) && estado != EstadoTarea.COMPLETADA){
-        estado = EstadoTarea.VENCIDA;
+        if (limite.isBefore(LocalDateTime.now()) && estado != EstadoTarea.COMPLETADA){
+            estado = EstadoTarea.VENCIDA;
         }
         
     }
