@@ -12,6 +12,7 @@ public class Usuario {
     public Usuario(String user, String password) {
         this.user = user;
         this.password = password;
+        this.actividades = new ArrayList<>();
     }
 
     public String getUser() {
@@ -26,7 +27,7 @@ public class Usuario {
         return actividades;
     }
     
-    public void agregarAvtividades(Actividad activity){
+    public void agregarActividad(Actividad activity){
         this.actividades.add(activity);
     }
     
@@ -53,7 +54,7 @@ public class Usuario {
         return this.actividades.get(id);
     }
     
-    public void editarActividad(int id, Actividad nueva){
+    public void editarActividad(int id, Actividad nueva){//Corregir esto
         this.actividades.add(id, nueva);
     }
     
