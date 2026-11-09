@@ -3,7 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package GUI;
-
+import modelo.Usuario;
+import modelo.Actividad;
+import modelo.Tarea;
+import modelo.HorarioRecurrente;
+import controlador.GestorActividad;
+import controlador.GestorUsuarios;
 import java.awt.Color;
 import java.time.format.TextStyle;
 
@@ -16,8 +21,16 @@ public class CalendarPanel extends javax.swing.JPanel {
     java.time.LocalDate hoy = java.time.LocalDate.now();
     int mesActual = hoy.getMonthValue();
     int añoActual = hoy.getYear();
+    private GestorUsuarios gestor;
+    private Usuario user;
     public CalendarPanel() {
+        //Lo usa el diseñador de NetBeans y las pruebas
+        this(new GestorUsuarios(), new Usuario("prueba", "12345678"));
+    }
+    public CalendarPanel(GestorUsuarios gestor, Usuario user) {
         initComponents();
+        this.gestor = gestor;
+        this.user = user;
         days.setLayout(new java.awt.GridLayout(7,7));
         drawCalendar();
     }
@@ -151,7 +164,7 @@ public class CalendarPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnHoyActionPerformed
 
     private void btnNuevoEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoEventoActionPerformed
-        Evento NuevoEvento = new Evento(hoy.getDayOfMonth(), hoy.getMonthValue(), hoy.getYear());
+        Evento NuevoEvento = new Evento(hoy.getDayOfMonth(), hoy.getMonthValue(), hoy.getYear(), gestor, user, this);
         NuevoEvento.setVisible(true);        
     }//GEN-LAST:event_btnNuevoEventoActionPerformed
 
@@ -169,6 +182,135 @@ public class CalendarPanel extends javax.swing.JPanel {
     private javax.swing.JButton mesSiguiente;
     private javax.swing.JLabel mes_año;
     // End of variables declaration//GEN-END:variables
+//Vuelve a dibujar el mes actual (se llama despues de guardar un evento)
+public void refrescar(){
+    drawCalendar();
+}
+
+private java.util.ArrayList<Actividad> actividadesDelDia(java.time.LocalDate fecha){
+    java.util.ArrayList<Actividad> resultado = new java.util.ArrayList<>();
+    for(Actividad a : user.getActividades()){
+        if(a instanceof HorarioRecurrente){
+            if(((HorarioRecurrente) a).generarRepeticiones().contains(fecha)){
+                resultado.add(a);
+            }
+        }else{
+            if(a.getFecha().equals(fecha)){
+                resultado.add(a);
+            }
+        }
+    }
+    return resultado;
+}
+
+//Construye la celda de un dia: numero del dia, boton + y un boton por cada evento
+private javax.swing.JPanel crearCelda(java.time.LocalDate fecha){
+    javax.swing.JPanel celda = new javax.swing.JPanel(new java.awt.BorderLayout());
+    celda.setBackground(Color.WHITE);
+    celda.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 220, 220)));
+    
+    //Parte superior: numero del dia a la izquierda y boton + a la derecha
+    javax.swing.JPanel superior = new javax.swing.JPanel(new java.awt.BorderLayout());
+    superior.setOpaque(false);
+    
+    javax.swing.JLabel lblNumero = new javax.swing.JLabel(" " + fecha.getDayOfMonth());
+    lblNumero.setFont(new java.awt.Font("Roboto SemiCondensed", 1, 13));
+    if(fecha.equals(hoy)){
+        lblNumero.setForeground(new java.awt.Color(249, 111, 11));
+        celda.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 111, 11), 2));
+    }
+    
+    javax.swing.JButton btnAgregar = new javax.swing.JButton("+");
+    btnAgregar.setFont(new java.awt.Font("Roboto SemiCondensed", 1, 12));
+    btnAgregar.setForeground(new java.awt.Color(249, 111, 11));
+    btnAgregar.setBackground(Color.WHITE);
+    btnAgregar.setMargin(new java.awt.Insets(0, 4, 0, 4));
+    btnAgregar.setFocusPainted(false);
+    btnAgregar.setToolTipText("Nuevo evento");
+    btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            Evento NuevoEvento = new Evento(fecha.getDayOfMonth(), fecha.getMonthValue(), fecha.getYear(), gestor, user, CalendarPanel.this);
+            NuevoEvento.setVisible(true);
+        }
+    });
+    
+    superior.add(lblNumero, java.awt.BorderLayout.WEST);
+    superior.add(btnAgregar, java.awt.BorderLayout.EAST);
+    celda.add(superior, java.awt.BorderLayout.NORTH);
+    
+    //Parte central: un boton por evento, uno debajo del otro (maximo 2 para que quepa "+N más")
+    javax.swing.JPanel listaEventos = new javax.swing.JPanel();
+    listaEventos.setLayout(new javax.swing.BoxLayout(listaEventos, javax.swing.BoxLayout.Y_AXIS));
+    listaEventos.setOpaque(false);
+    
+    java.util.ArrayList<Actividad> delDia = actividadesDelDia(fecha);
+    for(int i = 0; i < delDia.size() && i < 2; i++){
+        listaEventos.add(crearBotonEvento(delDia.get(i)));
+        listaEventos.add(javax.swing.Box.createVerticalStrut(2));
+    }
+    if(delDia.size() > 2){
+        //Boton con aspecto de texto: abre una ventana con todos los eventos del dia
+        javax.swing.JButton btnMas = new javax.swing.JButton("+" + (delDia.size() - 2) + " más");
+        btnMas.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 11));
+        btnMas.setForeground(Color.GRAY);
+        btnMas.setContentAreaFilled(false);
+        btnMas.setBorderPainted(false);
+        btnMas.setFocusPainted(false);
+        btnMas.setMargin(new java.awt.Insets(0, 4, 0, 4));
+        btnMas.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        btnMas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EventosDelDia ventanaEventos = new EventosDelDia(fecha, delDia, CalendarPanel.this);
+                ventanaEventos.setVisible(true);
+            }
+        });
+        listaEventos.add(btnMas);
+    }
+    celda.add(listaEventos, java.awt.BorderLayout.CENTER);
+    
+    return celda;
+}
+
+//Boton de un evento: el color depende del tipo y del estado, al hacer clic abre la edicion
+//No es private porque EventosDelDia tambien lo usa
+javax.swing.JButton crearBotonEvento(Actividad actividad){
+    javax.swing.JButton btnEvento = new javax.swing.JButton(actividad.getHora() + " " + actividad.getNombreActividad());
+    btnEvento.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 11));
+    btnEvento.setForeground(Color.WHITE);
+    btnEvento.setBackground(colorEvento(actividad));
+    btnEvento.setOpaque(true);
+    btnEvento.setFocusPainted(false);
+    btnEvento.setBorderPainted(false);
+    btnEvento.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    btnEvento.setMargin(new java.awt.Insets(1, 4, 1, 4));
+    btnEvento.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 20)); //Ocupa todo el ancho de la celda
+    btnEvento.setToolTipText(actividad.getNombreActividad() + " - " + actividad.getDescripcionActividad());
+    btnEvento.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            Evento EditarEvento = new Evento(gestor, user, actividad, CalendarPanel.this);
+            EditarEvento.setVisible(true);
+        }
+    });
+    return btnEvento;
+}
+
+//Color segun el tipo de actividad y el estado de la tarea
+//Es static y no es private porque PanelTareas tambien lo usa
+static Color colorEvento(Actividad actividad){
+    if(actividad instanceof HorarioRecurrente){
+        return new java.awt.Color(30, 136, 229);   //Azul: horarios recurrentes
+    }
+    if(actividad instanceof Tarea){
+        switch(((Tarea) actividad).getEstado()){
+            case PENDIENTE:  return new java.awt.Color(249, 111, 11);   //Naranja
+            case EN_CURSO:   return new java.awt.Color(142, 36, 170);   //Morado
+            case COMPLETADA: return new java.awt.Color(67, 160, 71);    //Verde
+            case VENCIDA:    return new java.awt.Color(229, 57, 53);    //Rojo
+        }
+    }
+    return Color.GRAY;
+}
+
 private void drawCalendar(){
     days.removeAll();
     
@@ -189,29 +331,15 @@ private void drawCalendar(){
     int inicioSemana = primerDia.getDayOfWeek().getValue();
     int contadorDias = 1;
     for(int i = 1; i <= 42; i++){
-        javax.swing.JButton btnDia = new javax.swing.JButton();
-        btnDia.setFocusPainted(false);
         if(i < inicioSemana || contadorDias > diasMes){
-            btnDia.setText("");
-            btnDia.setEnabled(false);
-            btnDia.setBackground(new java.awt.Color(240, 240, 240));
+            //Celda vacia: dias que no pertenecen al mes
+            javax.swing.JPanel celdaVacia = new javax.swing.JPanel();
+            celdaVacia.setBackground(new java.awt.Color(240, 240, 240));
+            days.add(celdaVacia);
         } else{
-            btnDia.setText(String.valueOf(contadorDias));
-            int dia = contadorDias;
-            btnDia.setBackground(Color.WHITE);
-            btnDia.addActionListener(new java.awt.event.ActionListener() {
-               public void actionPerformed(java.awt.event.ActionEvent evt) {
-                   Evento NuevoEvento = new Evento(dia, mesActual, añoActual);
-                   NuevoEvento.setVisible(true); 
-                }
-            });
-            if(añoActual == hoy.getYear() && mesActual == hoy.getMonthValue() && contadorDias == hoy.getDayOfMonth()){
-                btnDia.setBackground(new java.awt.Color(249, 111, 11));
-                btnDia.setForeground(Color.WHITE);
-            }
+            days.add(crearCelda(java.time.LocalDate.of(añoActual, mesActual, contadorDias)));
             contadorDias++;
         }
-        days.add(btnDia);
     }
     days.revalidate();
     days.repaint();

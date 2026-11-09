@@ -5,6 +5,15 @@
 package GUI;
 import modelo.EstadoTarea;
 import modelo.Tarea;
+import modelo.Actividad;
+import modelo.HorarioRecurrente;
+import modelo.Usuario;
+import controlador.GestorUsuarios;
+import controlador.GestorActividad;
+import persistencia.EscrituraLectura;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.DayOfWeek;
 /**
  *
  * @author joyac
@@ -14,14 +23,39 @@ public class Evento extends javax.swing.JFrame {
     /**
      * Creates new form event
      */
+    private GestorUsuarios gestor;
+    private Usuario user;
+    private CalendarPanel calendario; //Calendario que se redibuja al guardar (puede ser null)
+    private Actividad actividadEditando; //null = nuevo evento, si no = evento que se esta editando
     public Evento(){
-        initComponents();
+        //Solo para pruebas
+        this(LocalDate.now().getDayOfMonth(), LocalDate.now().getMonthValue(), LocalDate.now().getYear(),
+             new GestorUsuarios(), new Usuario("prueba", "12345678"), null);
     }
-    public Evento(int dia, int mes, int año) {
+    public Evento(int dia, int mes, int año, GestorUsuarios gestor, Usuario user) {
+        this(dia, mes, año, gestor, user, null);
+    }
+    public Evento(int dia, int mes, int año, GestorUsuarios gestor, Usuario user, CalendarPanel calendario) {
         initComponents();
+        this.gestor = gestor;
+        this.user = user;
+        this.calendario = calendario;
         java.time.LocalDate fechaElegida = java.time.LocalDate.of(año, mes, dia);
         datePicker.setDate(fechaElegida);
-        initial_timePicker.setTimeToNow();
+        initialTimePicker.setTimeToNow();
+        finalTimePicker.setEnabled(false);
+        datePicker1.setEnabled(false);
+        estado.setSelectedIndex(1); //Por defecto: tarea "Pendiente"
+        btn_delete.setVisible(false); //Solo se muestra al editar
+    }
+    //Modo editar: abre el mismo formulario con los datos de una actividad existente
+    public Evento(GestorUsuarios gestor, Usuario user, Actividad actividad, CalendarPanel calendario) {
+        this(actividad.getFecha().getDayOfMonth(), actividad.getFecha().getMonthValue(), actividad.getFecha().getYear(),
+             gestor, user, calendario);
+        this.actividadEditando = actividad;
+        newevent.setText("Editar Evento / Tarea");
+        btn_delete.setVisible(true);
+        cargarActividad(actividad);
     }
 
     /**
@@ -42,13 +76,18 @@ public class Evento extends javax.swing.JFrame {
         date = new javax.swing.JLabel();
         initial_time = new javax.swing.JLabel();
         datePicker = new com.github.lgooddatepicker.components.DatePicker();
-        initial_timePicker = new com.github.lgooddatepicker.components.TimePicker();
+        initialTimePicker = new com.github.lgooddatepicker.components.TimePicker();
         description1 = new javax.swing.JLabel();
         description2 = new javax.swing.JLabel();
         recurrencia = new javax.swing.JComboBox<>();
         btn_cancel = new javax.swing.JButton();
         btn_save = new javax.swing.JButton();
         estado = new javax.swing.JComboBox<>();
+        initial_time1 = new javax.swing.JLabel();
+        finalTimePicker = new com.github.lgooddatepicker.components.TimePicker();
+        date1 = new javax.swing.JLabel();
+        datePicker1 = new com.github.lgooddatepicker.components.DatePicker();
+        btn_delete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -82,7 +121,7 @@ public class Evento extends javax.swing.JFrame {
             }
         });
 
-        date.setText("FECHA");
+        date.setText("FECHA ");
         date.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
         date.setForeground(new java.awt.Color(153, 153, 153));
 
@@ -93,8 +132,8 @@ public class Evento extends javax.swing.JFrame {
         datePicker.setBackground(new java.awt.Color(240, 240, 240));
         datePicker.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 12)); // NOI18N
 
-        initial_timePicker.setBackground(new java.awt.Color(240, 240, 240));
-        initial_timePicker.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
+        initialTimePicker.setBackground(new java.awt.Color(240, 240, 240));
+        initialTimePicker.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
 
         description1.setText("ESTADO");
         description1.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
@@ -106,6 +145,11 @@ public class Evento extends javax.swing.JFrame {
 
         recurrencia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No", "Si" }));
         recurrencia.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
+        recurrencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                recurrenciaActionPerformed(evt);
+            }
+        });
 
         btn_cancel.setText("Cancelar");
         btn_cancel.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
@@ -124,11 +168,35 @@ public class Evento extends javax.swing.JFrame {
             }
         });
 
-        estado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pendiente", "En curso", "Completado", "Vencido" }));
+        estado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No aplica", "Pendiente", "En curso", "Completado", "Vencido" }));
         estado.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
         estado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 estadoActionPerformed(evt);
+            }
+        });
+
+        initial_time1.setText("HORA FIN");
+        initial_time1.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
+        initial_time1.setForeground(new java.awt.Color(153, 153, 153));
+
+        finalTimePicker.setBackground(new java.awt.Color(240, 240, 240));
+        finalTimePicker.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14)); // NOI18N
+
+        date1.setText("FECHA FIN");
+        date1.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
+        date1.setForeground(new java.awt.Color(153, 153, 153));
+
+        datePicker1.setBackground(new java.awt.Color(240, 240, 240));
+        datePicker1.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 12)); // NOI18N
+
+        btn_delete.setBackground(new java.awt.Color(255, 0, 0));
+        btn_delete.setFont(new java.awt.Font("Roboto Medium", 0, 12)); // NOI18N
+        btn_delete.setForeground(new java.awt.Color(255, 255, 255));
+        btn_delete.setText("Eliminar");
+        btn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteActionPerformed(evt);
             }
         });
 
@@ -139,45 +207,51 @@ public class Evento extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(title_text)
-                            .addComponent(description_text)
-                            .addComponent(datePicker, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(title)
-                                    .addComponent(initial_time))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(newevent, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(description1, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addComponent(newevent)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(27, 27, 27))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(description)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(initial_timePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(btn_save, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(date, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(description2, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(recurrencia, javax.swing.GroupLayout.Alignment.LEADING, 0, 340, Short.MAX_VALUE)
-                                .addComponent(estado, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 27, Short.MAX_VALUE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(initial_time)
+                            .addComponent(description1)
+                            .addComponent(description)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_delete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(title)
+                            .addComponent(description2)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(date)
+                                    .addComponent(datePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(initialTimePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(24, 24, 24)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(date1)
+                                            .addComponent(initial_time1))
+                                        .addGap(117, 117, 117))
+                                    .addComponent(datePicker1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(finalTimePicker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(description_text)
+                            .addComponent(estado, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(recurrencia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 25, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(newevent)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(title)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(title_text, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -186,13 +260,23 @@ public class Evento extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(description_text, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(date)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(date)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(datePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(date1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(datePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(datePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(initial_time)
+                    .addComponent(initial_time1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(initial_time)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(initial_timePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(initialTimePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(finalTimePicker, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(description1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -201,11 +285,13 @@ public class Evento extends javax.swing.JFrame {
                 .addComponent(description)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(recurrencia, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_delete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -222,30 +308,133 @@ public class Evento extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void title_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_title_textActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_title_textActionPerformed
-
-    private void description_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_description_textActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_description_textActionPerformed
+    private void estadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estadoActionPerformed
+        if(estado.getSelectedIndex() > 0){
+            recurrencia.setSelectedIndex(0);
+            datePicker1.setEnabled(false);
+            finalTimePicker.setEnabled(false);
+        }
+    }//GEN-LAST:event_estadoActionPerformed
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
-        if(title_text.getText().length() == 0){
-            javax.swing.JOptionPane.showMessageDialog(this, "ERROR: el titulo esta vacio");
+        String titulo = title_text.getText().trim();
+        String descripcion = description_text.getText().trim();
+        LocalDate fecha = datePicker.getDate();
+        LocalTime inicio = initialTimePicker.getTime();
+
+        if(titulo.length() == 0){
+            mostrarError("el titulo esta vacio");
+            return;
+        }
+        if(fecha == null || inicio == null){
+            mostrarError("seleccione la fecha y la hora de inicio");
+            return;
+        }
+
+        Actividad nueva;
+        if(recurrencia.getSelectedIndex() == 1){
+            //Horario recurrente: se repite cada semana el mismo dia hasta la fecha fin
+            LocalTime fin = finalTimePicker.getTime();
+            LocalDate fechaFin = datePicker1.getDate();
+            if(fin == null || !fin.isAfter(inicio)){
+                mostrarError("la hora fin debe ser posterior a la hora de inicio");
+                return;
+            }
+            if(fechaFin == null || fechaFin.isBefore(fecha)){
+                mostrarError("la fecha fin no puede ser anterior a la fecha de inicio");
+                return;
+            }
+            DayOfWeek dia = fecha.getDayOfWeek();
+            nueva = new HorarioRecurrente(dia, inicio, fin, fechaFin, titulo, descripcion, fecha, inicio);
         }else{
-            Tarea evento = new Tarea(title_text.getText(), description_text.getText(), datePicker.getDate(), initial_timePicker.getTime());
-            evento.setEstado(EstadoTarea.VENCIDA);
-        }        
+            //Tarea: lleva un estado. El indice 0 es "No aplica", por eso se resta 1 para el enum
+            if(estado.getSelectedIndex() == 0){
+                mostrarError("seleccione un estado o marque la recurrencia semanal");
+                return;
+            }
+            Tarea tarea = new Tarea(titulo, descripcion, fecha, inicio);
+            tarea.setEstado(EstadoTarea.values()[estado.getSelectedIndex() - 1]);
+            nueva = tarea;
+        }
+
+        if(actividadEditando == null){
+            new GestorActividad().agregarActividad(user, nueva);
+        }else{
+            new GestorActividad().editarActividad(user, actividadEditando.getId(), nueva);
+        }
+        guardarYCerrar();
     }//GEN-LAST:event_btn_saveActionPerformed
 
     private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
         this.dispose();
     }//GEN-LAST:event_btn_cancelActionPerformed
 
-    private void estadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estadoActionPerformed
+    private void recurrenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recurrenciaActionPerformed
+        if(recurrencia.getSelectedIndex() == 1){
+            estado.setSelectedIndex(0);
+            datePicker1.setEnabled(true);
+            finalTimePicker.setEnabled(true);
+        }else{
+            datePicker1.setEnabled(false);
+            finalTimePicker.setEnabled(false);
+        }
+    }//GEN-LAST:event_recurrenciaActionPerformed
+
+    private void description_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_description_textActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_estadoActionPerformed
+    }//GEN-LAST:event_description_textActionPerformed
+
+    private void title_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_title_textActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_title_textActionPerformed
+
+    private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
+        int respuesta = javax.swing.JOptionPane.showConfirmDialog(this,
+                "¿Seguro que desea eliminar \"" + actividadEditando.getNombreActividad() + "\"?",
+                "Eliminar evento", javax.swing.JOptionPane.YES_NO_OPTION);
+        if(respuesta == javax.swing.JOptionPane.YES_OPTION){
+            new GestorActividad().eliminarActividad(user, actividadEditando.getId());
+            guardarYCerrar();
+        }
+    }//GEN-LAST:event_btn_deleteActionPerformed
+
+private void mostrarError(String mensaje){
+    javax.swing.JOptionPane.showMessageDialog(this, "ERROR: " + mensaje);
+}
+
+//Guarda los cambios en el archivo, redibuja el calendario y cierra el formulario
+private void guardarYCerrar(){
+    new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
+    if(calendario != null){
+        calendario.refrescar();
+    }
+    this.dispose();
+}
+
+//Llena los campos con los datos de la actividad que se va a editar
+private void cargarActividad(Actividad actividad){
+    title_text.setText(actividad.getNombreActividad());
+    description_text.setText(actividad.getDescripcionActividad());
+    datePicker.setDate(actividad.getFecha());
+    initialTimePicker.setTime(actividad.getHora());
+    
+    if(actividad instanceof HorarioRecurrente){
+        HorarioRecurrente horario = (HorarioRecurrente) actividad;
+        recurrencia.setSelectedIndex(1); //Tambien habilita hora fin y fecha fin
+        initialTimePicker.setTime(horario.getHoraInicio());
+        finalTimePicker.setTime(horario.getHoraFin());
+        datePicker1.setDate(horario.getFechaFinRecurrencia());
+    }else if(actividad instanceof Tarea){
+        recurrencia.setSelectedIndex(0);
+        estado.setSelectedIndex(((Tarea) actividad).getEstado().ordinal() + 1); //+1 por "No aplica"
+    }
+    
+    //Al editar no se permite cambiar entre tarea y horario recurrente
+    recurrencia.setEnabled(false);
+    if(actividad instanceof HorarioRecurrente){
+        estado.setEnabled(false);
+    }
+}
 
     /**
      * @param args the command line arguments
@@ -287,14 +476,19 @@ public class Evento extends javax.swing.JFrame {
     private javax.swing.JButton btn_cancel;
     private javax.swing.JButton btn_save;
     private javax.swing.JLabel date;
+    private javax.swing.JLabel date1;
     private com.github.lgooddatepicker.components.DatePicker datePicker;
+    private com.github.lgooddatepicker.components.DatePicker datePicker1;
     private javax.swing.JLabel description;
     private javax.swing.JLabel description1;
     private javax.swing.JLabel description2;
     private javax.swing.JTextField description_text;
     private javax.swing.JComboBox<String> estado;
+    private com.github.lgooddatepicker.components.TimePicker finalTimePicker;
+    private com.github.lgooddatepicker.components.TimePicker initialTimePicker;
     private javax.swing.JLabel initial_time;
-    private com.github.lgooddatepicker.components.TimePicker initial_timePicker;
+    private javax.swing.JLabel initial_time1;
+    private javax.swing.JButton btn_delete;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel newevent;
     private javax.swing.JComboBox<String> recurrencia;

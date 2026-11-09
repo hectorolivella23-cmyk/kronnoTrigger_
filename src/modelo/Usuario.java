@@ -95,6 +95,9 @@ public class Usuario {
         
         if(existente instanceof Tarea){
             Tarea tarea = (Tarea) existente;
+            if(nueva instanceof Tarea){
+                tarea.setEstado(((Tarea) nueva).getEstado()); //Conserva el estado elegido en el formulario
+            }
             if(tarea.getEstado() == EstadoTarea.VENCIDA){
                 tarea.marcarPendiente();
             }

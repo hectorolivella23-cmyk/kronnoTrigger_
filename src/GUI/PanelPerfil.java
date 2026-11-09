@@ -5,6 +5,7 @@
 package GUI;
 import modelo.Usuario;
 import controlador.GestorUsuarios;
+import persistencia.EscrituraLectura;
 /**
  *
  * @author joyac
@@ -17,9 +18,9 @@ public class PanelPerfil extends javax.swing.JPanel {
     private GestorUsuarios gestor;
     private Usuario user;
     public PanelPerfil(GestorUsuarios gestor, Usuario user) {
-        initComponents();
         this.gestor = gestor;
         this.user = user;
+        initComponents();
     }
 
     /**
@@ -81,6 +82,11 @@ public class PanelPerfil extends javax.swing.JPanel {
 
         btnCancel.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
         btnCancel.setText("Cancelar");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
 
         lblChangePassword.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 18)); // NOI18N
         lblChangePassword.setForeground(new java.awt.Color(249, 111, 11));
@@ -189,21 +195,53 @@ public class PanelPerfil extends javax.swing.JPanel {
     }//GEN-LAST:event_NewPasswordActionPerformed
 
     private void btndeleteuserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeleteuserActionPerformed
+        int respuesta = javax.swing.JOptionPane.showConfirmDialog(this, "Estas seguro de querer borrar tu cuenta tus datos no podran recuperarse");
+        if(respuesta == javax.swing.JOptionPane.YES_OPTION){
+            gestor.eliminarUsuario(user.getUser());
+            new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
+            new login(gestor).setVisible(true);
+            javax.swing.SwingUtilities.getWindowAncestor(this).dispose();
+        }
         
     }//GEN-LAST:event_btndeleteuserActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         String newpass = new String(NewPassword.getPassword());
         String actualpass = new String(ActualPassword.getPassword());
-        if(actualpass.length() == 0 && newpass.length() == 0){
-            user.setUser(changeuser.getText());
+        String newuser = changeuser.getText();
+        Usuario existente = gestor.buscarUsuario(newuser);
+        if(newuser.length() == 0 || (existente != null && existente != user)){
+            javax.swing.JOptionPane.showMessageDialog(this, "ERROR: nombre de usuario en uso o vacio");
         }else{
-            if(actualpass.equals(user.getPassword())){
+            if(actualpass.length() == 0 && newpass.length() == 0){
                 user.setUser(changeuser.getText());
-                user.setPassword(newpass);
+                new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
+                javax.swing.JOptionPane.showMessageDialog(this, "Información guardada exitosamente");
+            }else{
+                if(actualpass.equals(user.getPassword())){
+                    if(newpass.length() > 7){
+                        user.setUser(changeuser.getText());
+                        user.setPassword(newpass);
+                        new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
+                        ActualPassword.setText("");
+                        NewPassword.setText("");
+                        javax.swing.JOptionPane.showMessageDialog(this, "Información guardada exitosamente");
+                    }else{
+                        javax.swing.JOptionPane.showMessageDialog(this, "ERROR: La nueva contraseña es muy corta minimo 8 caracteres");
+                    }
+                }else{
+                    javax.swing.JOptionPane.showMessageDialog(this, "ERROR: La contraseña actual es incorrecta");
+                }
             }
         }
+        
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        changeuser.setText(user.getUser());
+        ActualPassword.setText("");
+        NewPassword.setText("");
+    }//GEN-LAST:event_btnCancelActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

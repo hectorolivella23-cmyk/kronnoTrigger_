@@ -7,7 +7,7 @@ public class KronnoTrigger {
 
     public static void main(String[] args) {
         EscrituraLectura archivos = new EscrituraLectura();
-        GestorUsuarios gestor = new GestorUsuarios();
+        GestorUsuarios gestor = new GestorUsuarios(archivos.leerUsuarios());
         java.awt.EventQueue.invokeLater(() -> new login(gestor).setVisible(true));
     }
 }

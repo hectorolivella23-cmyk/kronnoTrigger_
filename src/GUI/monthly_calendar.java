@@ -6,6 +6,11 @@ package GUI;
 import java.awt.Color;
 import controlador.GestorUsuarios;
 import modelo.Usuario;
+import modelo.Actividad;
+import modelo.Tarea;
+import modelo.HorarioRecurrente;
+import logica.Notificador;
+import persistencia.EscrituraLectura;
 /**
  *
  * @author joyac
@@ -21,10 +26,23 @@ public class monthly_calendar extends javax.swing.JFrame {
         initComponents();
         this.gestor = gestor;
         this.user = user;
+        
+        //Antes de dibujar el calendario se marcan como VENCIDA las tareas que ya pasaron
+        new Notificador().actualizarEstados(user);
+        new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
+        
+        CambiarPanel(new CalendarPanel(gestor, user)); //Calendario inicial con el usuario que inicio sesion
+        
+        //Las notificaciones se muestran cuando la ventana ya esta visible
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                mostrarNotificaciones();
+            }
+        });
     }
     
     public monthly_calendar(){
-        initComponents(); //Solo para pruebas
+        this(new GestorUsuarios(), new Usuario("prueba", "12345678")); //Solo para pruebas
     }
 
     /**
@@ -154,7 +172,7 @@ public class monthly_calendar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPerfilActionPerformed
 
     private void btnTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTareasActionPerformed
-        CambiarPanel(new PanelTareas());
+        CambiarPanel(new PanelTareas(gestor, user));
         btnCalendario.setBackground(Color.WHITE);
         btnCalendario.setForeground(new java.awt.Color(249, 111, 11));
         btnTareas.setBackground(new java.awt.Color(249, 111, 11));
@@ -162,7 +180,7 @@ public class monthly_calendar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTareasActionPerformed
 
     private void btnCalendarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendarioActionPerformed
-        CambiarPanel(new CalendarPanel());
+        CambiarPanel(new CalendarPanel(gestor, user));
         btnCalendario.setBackground(new java.awt.Color(249, 111, 11));
         btnCalendario.setForeground(Color.WHITE);
         btnTareas.setBackground(Color.WHITE);
@@ -174,6 +192,26 @@ private void CambiarPanel(javax.swing.JPanel PanelNuevo){
     PanelDerecho.add(PanelNuevo, java.awt.BorderLayout.CENTER);
     PanelDerecho.revalidate();
     PanelDerecho.repaint();
+}
+
+//Muestra una ventana emergente por cada actividad a la que le falta menos de 1 dia
+private void mostrarNotificaciones(){
+    java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+    for(Actividad actividad : new Notificador().buscarActividadesProximas(user, ahora)){
+        String detalle;
+        if(actividad instanceof HorarioRecurrente){
+            HorarioRecurrente horario = (HorarioRecurrente) actividad;
+            detalle = "Horario de " + horario.getHoraInicio() + " a " + horario.getHoraFin();
+        }else if(actividad instanceof Tarea){
+            detalle = "Vence el " + actividad.getFecha() + " a las " + actividad.getHora();
+        }else{
+            detalle = "Programada el " + actividad.getFecha() + " a las " + actividad.getHora();
+        }
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Falta menos de 1 día\n" + detalle,
+                actividad.getNombreActividad(),
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
 }
     /**
      * @param args the command line arguments

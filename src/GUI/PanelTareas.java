@@ -3,6 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package GUI;
+import controlador.GestorUsuarios;
+import modelo.Usuario;
+import modelo.Actividad;
+import modelo.Tarea;
+import modelo.EstadoTarea;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,8 +19,30 @@ public class PanelTareas extends javax.swing.JPanel {
     /**
      * Creates new form PanelTareas
      */
+    private GestorUsuarios gestor;
+    private Usuario user;
     public PanelTareas() {
+        //Lo usa el diseñador de NetBeans y las pruebas
+        this(new GestorUsuarios(), new Usuario("prueba", "12345678"));
+    }
+    private javax.swing.JPanel listaTareas; //Lista de tareas dentro de jPanel2 (con scroll)
+    public PanelTareas(GestorUsuarios gestor, Usuario user) {
         initComponents();
+        this.gestor = gestor;
+        this.user = user;
+        
+        //jPanel2 (centro del panel) se usa como contenedor de la lista con barra de desplazamiento
+        listaTareas = new javax.swing.JPanel();
+        listaTareas.setLayout(new javax.swing.BoxLayout(listaTareas, javax.swing.BoxLayout.Y_AXIS));
+        listaTareas.setBackground(java.awt.Color.WHITE);
+        listaTareas.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 25, 20, 26));
+        javax.swing.JScrollPane scrollTareas = new javax.swing.JScrollPane(listaTareas);
+        scrollTareas.setBorder(null);
+        scrollTareas.getVerticalScrollBar().setUnitIncrement(16);
+        jPanel2.setLayout(new java.awt.BorderLayout());
+        jPanel2.add(scrollTareas, java.awt.BorderLayout.CENTER);
+        
+        refrescar();
     }
 
     /**
@@ -78,7 +106,9 @@ public class PanelTareas extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNuevoEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoEventoActionPerformed
-        Evento NuevoEvento = new Evento();
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        Evento NuevoEvento = new Evento(hoy.getDayOfMonth(), hoy.getMonthValue(), hoy.getYear(), gestor, user);
+        refrescarAlCerrar(NuevoEvento);
         NuevoEvento.setVisible(true);
     }//GEN-LAST:event_btnNuevoEventoActionPerformed
 
@@ -89,4 +119,82 @@ public class PanelTareas extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
+//Vuelve a llenar la lista con las tareas pendientes y en curso del usuario
+public void refrescar(){
+    listaTareas.removeAll();
+    
+    ArrayList<Tarea> tareas = tareasActivas();
+    jLabel1.setText("Tareas Pendientes (" + tareas.size() + ")");
+    
+    if(tareas.isEmpty()){
+        javax.swing.JLabel lblVacio = new javax.swing.JLabel("No tienes tareas pendientes ni en curso");
+        lblVacio.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 16));
+        lblVacio.setForeground(java.awt.Color.GRAY);
+        lblVacio.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        listaTareas.add(lblVacio);
+    }
+    for(Tarea tarea : tareas){
+        listaTareas.add(crearBotonTarea(tarea));
+        listaTareas.add(javax.swing.Box.createVerticalStrut(6));
+    }
+    listaTareas.revalidate();
+    listaTareas.repaint();
+}
+
+//Tareas con estado PENDIENTE o EN_CURSO, ordenadas por fecha y hora (la mas proxima primero)
+private ArrayList<Tarea> tareasActivas(){
+    ArrayList<Tarea> resultado = new ArrayList<>();
+    for(Actividad actividad : user.getActividades()){
+        if(actividad instanceof Tarea){
+            Tarea tarea = (Tarea) actividad;
+            if(tarea.getEstado() == EstadoTarea.PENDIENTE || tarea.getEstado() == EstadoTarea.EN_CURSO){
+                resultado.add(tarea);
+            }
+        }
+    }
+    resultado.sort(new java.util.Comparator<Tarea>() {
+        public int compare(Tarea a, Tarea b) {
+            int porFecha = a.getFecha().compareTo(b.getFecha());
+            return porFecha != 0 ? porFecha : a.getHora().compareTo(b.getHora());
+        }
+    });
+    return resultado;
+}
+
+//Boton de una tarea (mismo estilo y colores que en el calendario), al hacer clic abre la edicion
+private javax.swing.JButton crearBotonTarea(Tarea tarea){
+    java.time.format.DateTimeFormatter formato = java.time.format.DateTimeFormatter.ofPattern("EEE d 'de' MMMM", java.util.Locale.forLanguageTag("es"));
+    String estadoTexto = tarea.getEstado() == EstadoTarea.EN_CURSO ? "En curso" : "Pendiente";
+    
+    javax.swing.JButton btnTarea = new javax.swing.JButton("<html><b>" + tarea.getNombreActividad() + "</b>&nbsp;&nbsp;&nbsp;"
+            + tarea.getFecha().format(formato) + " · " + tarea.getHora() + " · " + estadoTexto + "</html>");
+    btnTarea.setFont(new java.awt.Font("Roboto SemiCondensed", 0, 14));
+    btnTarea.setForeground(java.awt.Color.WHITE);
+    btnTarea.setBackground(CalendarPanel.colorEvento(tarea));
+    btnTarea.setOpaque(true);
+    btnTarea.setFocusPainted(false);
+    btnTarea.setBorderPainted(false);
+    btnTarea.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    btnTarea.setMargin(new java.awt.Insets(6, 10, 6, 10));
+    btnTarea.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 40)); //Ocupa todo el ancho
+    btnTarea.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+    btnTarea.setToolTipText(tarea.getDescripcionActividad());
+    btnTarea.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            Evento EditarEvento = new Evento(gestor, user, tarea, null);
+            refrescarAlCerrar(EditarEvento);
+            EditarEvento.setVisible(true);
+        }
+    });
+    return btnTarea;
+}
+
+//Cuando se cierra el formulario (guardar, eliminar o cancelar) se actualiza la lista
+private void refrescarAlCerrar(Evento formulario){
+    formulario.addWindowListener(new java.awt.event.WindowAdapter() {
+        public void windowClosed(java.awt.event.WindowEvent e) {
+            refrescar();
+        }
+    });
+}
 }
