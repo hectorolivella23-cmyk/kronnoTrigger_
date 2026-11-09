@@ -5,6 +5,8 @@
 package GUI;
 import modelo.Usuario;
 import controlador.GestorUsuarios;
+import controlador.Autentificacion;
+import controlador.ResultadoAutentificacion;
 import persistencia.EscrituraLectura;
 /**
  *
@@ -194,11 +196,16 @@ public class register extends javax.swing.JFrame {
         String pass2 = new String(txtconfirmpassword.getPassword());
         if(pass1.length() >= 8){
             if(pass1.equals(pass2)){
-            Usuario user = new Usuario(txtuser.getText(), pass2);
-                if(gestor.registrarUsuario(user)){
+                String nombre = txtuser.getText().trim();
+                Autentificacion autentificacion = new Autentificacion(gestor);
+                ResultadoAutentificacion resultado = autentificacion.registrar(nombre, pass2);
+                if(resultado == ResultadoAutentificacion.valido){
                     new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
-                    new monthly_calendar(gestor, user).setVisible(true);
+                    autentificacion.iniciarSesion(nombre, pass2); //Entra directamente con la cuenta nueva
+                    new monthly_calendar(gestor, autentificacion).setVisible(true);
                     this.dispose();
+                }else if(resultado == ResultadoAutentificacion.faltanDatos){
+                    javax.swing.JOptionPane.showMessageDialog(this, "ERROR: Ingrese un nombre de usuario");
                 }else{
                     javax.swing.JOptionPane.showMessageDialog(this, "ERROR: Nombre de usuario en uso seleccione otro");
                 }

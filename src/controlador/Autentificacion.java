@@ -47,7 +47,8 @@ public class Autentificacion {
         this.usuarioActual = null;
     }
     
-    public boolean iniciarSesion(){
+    //Antes se llamaba igual que iniciarSesion(usuario, contraseña) y confundia
+    public boolean haySesionActiva(){
         return this.usuarioActual != null;
     }
     

@@ -4,6 +4,7 @@
  */
 package GUI;
 import controlador.GestorUsuarios;
+import controlador.AdministrarTareas;
 import modelo.Usuario;
 import modelo.Actividad;
 import modelo.Tarea;
@@ -143,15 +144,10 @@ public void refrescar(){
 
 //Tareas con estado PENDIENTE o EN_CURSO, ordenadas por fecha y hora (la mas proxima primero)
 private ArrayList<Tarea> tareasActivas(){
+    AdministrarTareas administrar = new AdministrarTareas(user);
     ArrayList<Tarea> resultado = new ArrayList<>();
-    for(Actividad actividad : user.getActividades()){
-        if(actividad instanceof Tarea){
-            Tarea tarea = (Tarea) actividad;
-            if(tarea.getEstado() == EstadoTarea.PENDIENTE || tarea.getEstado() == EstadoTarea.EN_CURSO){
-                resultado.add(tarea);
-            }
-        }
-    }
+    resultado.addAll(administrar.filtrarPorEstado(EstadoTarea.PENDIENTE));
+    resultado.addAll(administrar.filtrarPorEstado(EstadoTarea.EN_CURSO));
     resultado.sort(new java.util.Comparator<Tarea>() {
         public int compare(Tarea a, Tarea b) {
             int porFecha = a.getFecha().compareTo(b.getFecha());

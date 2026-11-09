@@ -4,6 +4,8 @@
  */
 package GUI;
 import controlador.GestorUsuarios;
+import controlador.Autentificacion;
+import controlador.ResultadoAutentificacion;
 import modelo.Usuario;
 /**
  *
@@ -193,10 +195,13 @@ public class login extends javax.swing.JFrame {
 
     private void login_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_buttonActionPerformed
         String pass = new String(txtpassword.getPassword());
-        Usuario user = gestor.iniciarSesion(txtuser.getText(), pass);
-        if(user != null){
-            new monthly_calendar(gestor, user).setVisible(true);
+        Autentificacion autentificacion = new Autentificacion(gestor);
+        ResultadoAutentificacion resultado = autentificacion.iniciarSesion(txtuser.getText().trim(), pass);
+        if(resultado == ResultadoAutentificacion.valido){
+            new monthly_calendar(gestor, autentificacion).setVisible(true);
             this.dispose();
+        }else if(resultado == ResultadoAutentificacion.faltanDatos){
+            javax.swing.JOptionPane.showMessageDialog(this, "ERROR: Ingrese el nombre de usuario y la contraseña");
         }else{
             javax.swing.JOptionPane.showMessageDialog(this, "ERROR: Nombre de usuario o contraseña incorrectos");
         }

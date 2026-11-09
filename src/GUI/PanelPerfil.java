@@ -5,6 +5,7 @@
 package GUI;
 import modelo.Usuario;
 import controlador.GestorUsuarios;
+import controlador.Autentificacion;
 import persistencia.EscrituraLectura;
 /**
  *
@@ -17,9 +18,14 @@ public class PanelPerfil extends javax.swing.JPanel {
      */
     private GestorUsuarios gestor;
     private Usuario user;
+    private Autentificacion autentificacion; //Sesion iniciada en el login (puede ser null en pruebas)
     public PanelPerfil(GestorUsuarios gestor, Usuario user) {
+        this(gestor, user, null);
+    }
+    public PanelPerfil(GestorUsuarios gestor, Usuario user, Autentificacion autentificacion) {
         this.gestor = gestor;
         this.user = user;
+        this.autentificacion = autentificacion;
         initComponents();
     }
 
@@ -45,6 +51,7 @@ public class PanelPerfil extends javax.swing.JPanel {
         lblNewPassword = new javax.swing.JLabel();
         NewPassword = new javax.swing.JPasswordField();
         btndeleteuser = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(600, 500));
         setLayout(new java.awt.BorderLayout());
@@ -117,6 +124,16 @@ public class PanelPerfil extends javax.swing.JPanel {
             }
         });
 
+        btnLogout.setBackground(new java.awt.Color(255, 255, 255));
+        btnLogout.setFont(new java.awt.Font("Roboto Condensed", 0, 18)); // NOI18N
+        btnLogout.setForeground(new java.awt.Color(249, 111, 11));
+        btnLogout.setText("Cerrar Sesión");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -138,7 +155,9 @@ public class PanelPerfil extends javax.swing.JPanel {
                                     .addComponent(porfile)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(25, 25, 25)
-                                        .addComponent(btndeleteuser)))
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(btndeleteuser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
@@ -160,7 +179,9 @@ public class PanelPerfil extends javax.swing.JPanel {
                         .addGap(69, 69, 69)
                         .addComponent(porfile)
                         .addGap(18, 18, 18)
-                        .addComponent(btndeleteuser))
+                        .addComponent(btndeleteuser)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnLogout))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(56, 56, 56)
                         .addComponent(jLabel3)
@@ -199,8 +220,7 @@ public class PanelPerfil extends javax.swing.JPanel {
         if(respuesta == javax.swing.JOptionPane.YES_OPTION){
             gestor.eliminarUsuario(user.getUser());
             new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
-            new login(gestor).setVisible(true);
-            javax.swing.SwingUtilities.getWindowAncestor(this).dispose();
+            volverAlLogin();
         }
         
     }//GEN-LAST:event_btndeleteuserActionPerformed
@@ -243,11 +263,29 @@ public class PanelPerfil extends javax.swing.JPanel {
         NewPassword.setText("");
     }//GEN-LAST:event_btnCancelActionPerformed
 
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        int respuesta = javax.swing.JOptionPane.showConfirmDialog(this, "¿Desea cerrar sesión?",
+                "Cerrar sesión", javax.swing.JOptionPane.YES_NO_OPTION);
+        if(respuesta == javax.swing.JOptionPane.YES_OPTION){
+            volverAlLogin();
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+//Cierra la sesion, cierra la ventana principal y vuelve al inicio de sesion
+private void volverAlLogin(){
+    if(autentificacion != null && autentificacion.haySesionActiva()){
+        autentificacion.cerrarSesion();
+    }
+    new login(gestor).setVisible(true);
+    javax.swing.SwingUtilities.getWindowAncestor(this).dispose();
+}
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField ActualPassword;
     private javax.swing.JPasswordField NewPassword;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btndeleteuser;
     private javax.swing.JTextField changeuser;

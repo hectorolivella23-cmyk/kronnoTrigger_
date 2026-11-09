@@ -5,6 +5,8 @@
 package GUI;
 import java.awt.Color;
 import controlador.GestorUsuarios;
+import controlador.AdministrarTareas;
+import controlador.Autentificacion;
 import modelo.Usuario;
 import modelo.Actividad;
 import modelo.Tarea;
@@ -22,14 +24,20 @@ public class monthly_calendar extends javax.swing.JFrame {
      */
     private GestorUsuarios gestor;
     private Usuario user;
+    private Autentificacion autentificacion; //Sesion iniciada en el login o el registro
+    public monthly_calendar(GestorUsuarios gestor, Autentificacion autentificacion) {
+        this(gestor, autentificacion.getUsuarioActual());
+        this.autentificacion = autentificacion;
+    }
     public monthly_calendar(GestorUsuarios gestor, Usuario user) {
         initComponents();
         this.gestor = gestor;
         this.user = user;
         
         //Antes de dibujar el calendario se marcan como VENCIDA las tareas que ya pasaron
-        new Notificador().actualizarEstados(user);
-        new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
+        if(new AdministrarTareas(user).ActualizarCambios() > 0){
+            new EscrituraLectura().escribirUsuarios(gestor.listarUsuarios());
+        }
         
         CambiarPanel(new CalendarPanel(gestor, user)); //Calendario inicial con el usuario que inicio sesion
         
@@ -164,7 +172,7 @@ public class monthly_calendar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerfilActionPerformed
-        CambiarPanel(new PanelPerfil(gestor, user));
+        CambiarPanel(new PanelPerfil(gestor, user, autentificacion));
         btnCalendario.setBackground(Color.WHITE);
         btnCalendario.setForeground(new java.awt.Color(249, 111, 11));
         btnTareas.setBackground(Color.WHITE);

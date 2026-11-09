@@ -10,6 +10,8 @@ import modelo.HorarioRecurrente;
 import modelo.Usuario;
 import controlador.GestorUsuarios;
 import controlador.GestorActividad;
+import controlador.AdministrarTareas;
+import controlador.ResultadoTareas;
 import persistencia.EscrituraLectura;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -322,16 +324,13 @@ public class Evento extends javax.swing.JFrame {
         LocalDate fecha = datePicker.getDate();
         LocalTime inicio = initialTimePicker.getTime();
 
-        if(titulo.length() == 0){
-            mostrarError("el titulo esta vacio");
-            return;
-        }
-        if(fecha == null || inicio == null){
-            mostrarError("seleccione la fecha y la hora de inicio");
+        AdministrarTareas administrar = new AdministrarTareas(user);
+        String errorDatos = administrar.validarDatos(titulo, fecha, inicio);
+        if(errorDatos != null){
+            mostrarError(errorDatos);
             return;
         }
 
-        Actividad nueva;
         if(recurrencia.getSelectedIndex() == 1){
             //Horario recurrente: se repite cada semana el mismo dia hasta la fecha fin
             LocalTime fin = finalTimePicker.getTime();
@@ -345,22 +344,42 @@ public class Evento extends javax.swing.JFrame {
                 return;
             }
             DayOfWeek dia = fecha.getDayOfWeek();
-            nueva = new HorarioRecurrente(dia, inicio, fin, fechaFin, titulo, descripcion, fecha, inicio);
+            HorarioRecurrente horario = new HorarioRecurrente(dia, inicio, fin, fechaFin, titulo, descripcion, fecha, inicio);
+            //Los horarios recurrentes se guardan con GestorActividad (AdministrarTareas no los maneja)
+            if(actividadEditando == null){
+                new GestorActividad().agregarActividad(user, horario);
+            }else{
+                new GestorActividad().editarActividad(user, actividadEditando.getId(), horario);
+            }
         }else{
             //Tarea: lleva un estado. El indice 0 es "No aplica", por eso se resta 1 para el enum
             if(estado.getSelectedIndex() == 0){
                 mostrarError("seleccione un estado o marque la recurrencia semanal");
                 return;
             }
-            Tarea tarea = new Tarea(titulo, descripcion, fecha, inicio);
-            tarea.setEstado(EstadoTarea.values()[estado.getSelectedIndex() - 1]);
-            nueva = tarea;
-        }
-
-        if(actividadEditando == null){
-            new GestorActividad().agregarActividad(user, nueva);
-        }else{
-            new GestorActividad().editarActividad(user, actividadEditando.getId(), nueva);
+            EstadoTarea estadoElegido = EstadoTarea.values()[estado.getSelectedIndex() - 1];
+            if(actividadEditando == null){
+                Tarea tarea = administrar.crearTarea(titulo, descripcion, fecha, inicio);
+                administrar.cambiarEstado(tarea.getId(), estadoElegido);
+            }else{
+                int id = actividadEditando.getId();
+                ResultadoTareas resultado = administrar.editar(id, titulo, descripcion, fecha, inicio, false);
+                if(resultado == ResultadoTareas.porConfirmar){
+                    //Una tarea completada pide confirmacion antes de modificarse
+                    int respuesta = javax.swing.JOptionPane.showConfirmDialog(this,
+                            "Esta tarea ya esta completada. ¿Desea modificarla de todos modos?",
+                            "Tarea completada", javax.swing.JOptionPane.YES_NO_OPTION);
+                    if(respuesta != javax.swing.JOptionPane.YES_OPTION){
+                        return;
+                    }
+                    resultado = administrar.editar(id, titulo, descripcion, fecha, inicio, true);
+                }
+                if(resultado != ResultadoTareas.Cambiado){
+                    mostrarError("no se pudo editar la tarea");
+                    return;
+                }
+                administrar.cambiarEstado(id, estadoElegido);
+            }
         }
         guardarYCerrar();
     }//GEN-LAST:event_btn_saveActionPerformed
@@ -393,7 +412,11 @@ public class Evento extends javax.swing.JFrame {
                 "¿Seguro que desea eliminar \"" + actividadEditando.getNombreActividad() + "\"?",
                 "Eliminar evento", javax.swing.JOptionPane.YES_NO_OPTION);
         if(respuesta == javax.swing.JOptionPane.YES_OPTION){
-            new GestorActividad().eliminarActividad(user, actividadEditando.getId());
+            if(actividadEditando instanceof Tarea){
+                new AdministrarTareas(user).eliminar(actividadEditando.getId());
+            }else{
+                new GestorActividad().eliminarActividad(user, actividadEditando.getId());
+            }
             guardarYCerrar();
         }
     }//GEN-LAST:event_btn_deleteActionPerformed

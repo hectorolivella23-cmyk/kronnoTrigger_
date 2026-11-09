@@ -14,8 +14,8 @@ public class AdministrarTareas {
     private Usuario usuario;
     private GestorActividad gestor;
     
-    public AdministrarTareas(Usuario usuraio){
-        this.usuario = usuario;
+    public AdministrarTareas(Usuario usuario){
+        this.usuario = usuario; //Antes el parametro se llamaba "usuraio" y usuario quedaba en null
         this.gestor = new GestorActividad();
     }
     
@@ -59,6 +59,7 @@ public class AdministrarTareas {
         return evento;
     }
     
+    //Lista las tareas y eventos del usuario (los horarios recurrentes se manejan con GestorActividad)
     public ArrayList<Actividad> listar(){
         
         ArrayList<Actividad> resultado = new ArrayList<>();
